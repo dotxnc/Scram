@@ -1,15 +1,12 @@
 package com.lum.scram.screens;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.lum.scram.Core;
 import static com.lum.scram.Core.MIP;
-import static com.lum.scram.Core.PIM;
 import com.lum.scram.Player;
 import com.lum.scram.Scram;
 import com.lum.scram.net.GameClient;
@@ -83,53 +80,34 @@ public class PlayScreen implements Screen {
 			
 			Player p = (Player)playerEntry.getValue();
 			
-			Core.font.draw(Core.batch, p.GetPosition().x + " " + p.GetPosition().y, p.GetPosition().x+9*MIP, -p.GetPosition().y+8*MIP);
+			Core.font.draw(Core.batch, p.GetPosition().x + " " + p.GetPosition().y, p.GetPosition().x, -p.GetPosition().y);
 		}
 		
 		Core.batch.end();
 		
-		/***************************
-		 * 
-		 * TODO: MOVE ALL THIS OVER TO THE PLAYER CLASS
-		 * 
-		 ***************************/
 		
-		// Player rendering
-		Core.srend.setProjectionMatrix(Core.mainCam.combined);
-		Core.srend.begin(ShapeType.Line);
+		/* UPDATE AND RENDER PLAYERS */
 		
-		for (Map.Entry<Integer, Player> playerEntry : Core.players.entrySet()) {
-			if (((Player)playerEntry.getValue()).body != null) {
-				Vector2 pos = ((Player)playerEntry.getValue()).body.getPosition();
-				float rot = ((Player)playerEntry.getValue()).body.getAngle();
-				//Core.srend.circle(pos.x*PIM, pos.y*PIM, 0.5f, 100);
-				Core.srend.rect(pos.x*PIM, pos.y*PIM, 0.25f, 0.25f, 0.5f, 0.5f, 1, 1, rot);
-				Core.srend.circle(pos.x*PIM+0.25f, pos.y*PIM+0.25f, 0.15f, 100);
-			}
-			
-		}
-		
-		Core.srend.end();
+		for (Map.Entry<Integer, Player> playerEntry : Core.players.entrySet())
+			((Player)playerEntry.getValue()).Render(Core.srend);
 		
 		if (Core.toCreate.contains(client.GetID(), true))
 			return;
 		
-		Player p = (Player) Core.players.get(client.GetID());
+		Player localPlayer = (Player) Core.players.get(client.GetID());
 		
-		if (p == null || p.body == null)
+		if (localPlayer == null || localPlayer.body == null)
 			return;
 		
-		client.SendPosition(p.GetPosition().x, p.GetPosition().y, p.GetPosition().z);
+		localPlayer.HandleInput();
+		client.SendPosition(localPlayer.GetPosition().x, localPlayer.GetPosition().y, localPlayer.GetPosition().z);
 		
-		/***************************
-		 * 
-		 * TODO: MOVE ALL THIS OVER TO THE PLAYER CLASS
-		 * 
-		 ***************************/
+		float lerpAmt = 0.01f; //framerate independent lerping
+		Vector3 newPos = Core.mainCam.position.lerp(new Vector3(localPlayer.GetPosition().x,localPlayer.GetPosition().y, 0) , (float) (1 - Math.pow(lerpAmt, delta)));
+		Core.mainCam.position.set(newPos);
 		
-		if (Gdx.input.isKeyPressed(Keys.W)) {
-			p.body.applyLinearImpulse(0, -20, p.GetPosition().x, p.GetPosition().y, true);
-		}
+		Core.mainCam.update();
+
 		
 	}
 

@@ -1,5 +1,8 @@
 package com.lum.scram;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -10,6 +13,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
+import static com.lum.scram.Core.PIM;
+import java.util.Map;
 
 public class Player {
 	private BodyDef bdef;
@@ -63,10 +68,31 @@ public class Player {
 	}
 	
 	public void Render(ShapeRenderer srend) {
+		srend.setProjectionMatrix(Core.mainCam.combined);
+		srend.begin(ShapeRenderer.ShapeType.Line);
+		
+		for (Map.Entry<Integer, Player> playerEntry : Core.players.entrySet()) {
+			if (((Player)playerEntry.getValue()).body != null) {
+				Vector2 pos = ((Player)playerEntry.getValue()).body.getPosition();
+				float rot = ((Player)playerEntry.getValue()).body.getAngle();
+				srend.rect(pos.x, pos.y, 0.25f, 0.25f, 0.5f, 0.5f, 1, 1, rot);
+				srend.circle(pos.x+0.25f, pos.y+0.25f, 0.15f, 100);
+			}
+			
+		}
+		
+		srend.end();
 	}
 	
 	public void HandleInput() {
-		
+		if (Gdx.input.isKeyPressed(Keys.W))
+			body.applyLinearImpulse(0, 0.5f, GetPosition().x, GetPosition().y, true);
+		if (Gdx.input.isKeyPressed(Keys.S))
+			body.applyLinearImpulse(0, -0.5f, GetPosition().x, GetPosition().y, true);
+		if (Gdx.input.isKeyPressed(Keys.A))
+			body.applyLinearImpulse(-0.5f, 0, GetPosition().x, GetPosition().y, true);
+		if (Gdx.input.isKeyPressed(Keys.D))
+			body.applyLinearImpulse(0.5f, 0, GetPosition().x, GetPosition().y, true);
 	}
 	
 }
