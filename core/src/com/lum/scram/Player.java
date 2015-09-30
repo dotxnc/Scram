@@ -1,7 +1,9 @@
 package com.lum.scram;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -30,6 +32,7 @@ public class Player {
 		bdef.type = BodyType.DynamicBody;
 		bdef.linearDamping = 5;
 		bdef.position.set(new Vector2(x, y));
+		bdef.angle = MathUtils.random(360);
 		
 		body = Core.world.createBody(bdef);
 		shape = new PolygonShape();
@@ -49,7 +52,15 @@ public class Player {
 	public void dispose() {
 		Core.world.destroyBody(body);
 	}
+	
+	public Vector3 GetPosition() {
 		
+		float x = body.getPosition().x;
+		float y = body.getPosition().y;
+		float rot = body.getAngle();
+		
+		return new Vector3(x, y, rot);
+	}
 	
 	public void Render(ShapeRenderer srend) {
 	}

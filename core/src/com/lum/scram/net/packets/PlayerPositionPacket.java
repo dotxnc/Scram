@@ -17,8 +17,12 @@ public class PlayerPositionPacket extends Packet {
 	}
 	
 	public void HandlePacket() {
+		if (Core.players.get(uid_sender) == null || Core.players.get(uid_sender).body == null)
+			return;
+		
 		Core.players.get(uid_sender).body.getTransform().setPosition(new Vector2(x, y));
 		Core.players.get(uid_sender).body.getTransform().setRotation(rot);
+		System.out.println("USER " + uid_sender + " MOVED");
 	}
 	
 	public void HandlePacketServer(Server server) {

@@ -4,7 +4,7 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.lum.scram.net.packets.Packet;
-import com.lum.scram.net.packets.PlayerJoinedPacket;
+import com.lum.scram.net.packets.PlayerPositionPacket;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,5 +40,14 @@ public class GameClient {
 	
 	public boolean IsConnected() {
 		return client.isConnected();
-	}	
+	}
+	
+	public int GetID() {
+		return client.getID();
+	}
+	
+	public void SendPosition(float x, float y, float rot) {
+		client.sendUDP(new PlayerPositionPacket(client.getID(), x, y, rot));
+	}
+		
 }

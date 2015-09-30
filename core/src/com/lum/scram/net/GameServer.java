@@ -53,7 +53,6 @@ public class GameServer {
 			}
 			
 			public void received(Connection conn, Object obj) {
-				System.out.println("Packet");
 				if (obj instanceof Packet) {
 					((Packet)obj).HandlePacketServer(server);
 				}

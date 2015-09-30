@@ -1,6 +1,5 @@
 package com.lum.scram.net.packets;
 
-import com.badlogic.gdx.math.MathUtils;
 import com.esotericsoftware.kryonet.Server;
 import com.lum.scram.Core;
 import com.lum.scram.Player;
