@@ -1,16 +1,18 @@
 package com.lum.scram.screens;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.lum.scram.Core;
+import static com.lum.scram.Core.PIM;
 import com.lum.scram.Player;
 import com.lum.scram.Scram;
 import com.lum.scram.net.GameClient;
 import com.lum.scram.net.GameServer;
-import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 /*
 The 1837 Racer's Storm was one of the most powerful and destructive hurricanes in
@@ -35,9 +37,10 @@ public class PlayScreen implements Screen {
 		server = new GameServer();
 		client = new GameClient();
 		
-		server.ConnectListeners();
-		server.Listen();
-		
+		if (Core.isServer) {
+			server.ConnectListeners();
+			server.Listen();
+		}
 		
 		client.ConnectListeners();
 		client.Connect();
@@ -50,6 +53,12 @@ public class PlayScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
+		
+		for (int i = 0; i < Core.toCreate.size; i++) {
+			Core.players.get(Core.toCreate.get(i)).Create();
+			Core.toCreate.removeIndex(i);
+		}
+		
 		Core.batch.begin();
 		if (Core.isServer)
 			Core.font.draw(Core.batch, "THIS IS A SERVER", 10, 10);
@@ -58,8 +67,25 @@ public class PlayScreen implements Screen {
 		
 		//Core.font.draw(Core.batch, "# Players = " + Integer.toString(Core.players.size()), 10, 25);
 		Core.font.draw(Core.batch, "# Players = " + server.GetConnections(), 10, 25);
-		Core.font.draw(Core.batch, "Connected = " + client.IsConnected(), 10, 40);
+		Core.font.draw(Core.batch, "# Network Bodies = " + Core.players.size(), 10, 40);
+		Core.font.draw(Core.batch, "Connected = " + client.IsConnected(), 10, 65);
+		
 		Core.batch.end();
+		
+		Core.srend.setProjectionMatrix(Core.mainCam.combined);
+		Core.srend.begin(ShapeType.Line);
+		
+		for (Map.Entry<Integer, Player> playerEntry : Core.players.entrySet()) {
+			if (((Player)playerEntry.getValue()).body != null) {
+				Vector2 pos = ((Player)playerEntry.getValue()).body.getPosition();
+				float rot = ((Player)playerEntry.getValue()).body.getAngle();
+				Core.srend.circle(pos.x*PIM, pos.y*PIM, 0.5f, 100);
+			}
+			
+		}
+		
+		Core.srend.end();
+		
 	}
 
 	@Override
