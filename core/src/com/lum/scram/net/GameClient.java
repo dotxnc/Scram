@@ -6,19 +6,26 @@ import com.esotericsoftware.kryonet.Listener;
 import com.lum.scram.net.packets.Packet;
 import com.lum.scram.net.packets.PlayerJoinedPacket;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GameClient {
 	private final Client client;
 	
 	public GameClient() {
 		client = new Client();
+		client.getKryo().setRegistrationRequired(false);
 	}
 	
-	public void Connect() throws IOException {
-		client.start();
-		client.connect(5000, "localhost", 9696, 9697);
-		
-		client.sendUDP(new PlayerJoinedPacket(client.getID()));
+	public void Connect() {
+		try {
+			client.start();
+			client.connect(5000, "localhost", 9696, 9696);
+			
+			//client.sendUDP(new PlayerJoinedPacket(client.getID()));
+		} catch (IOException ex) {
+			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+		}
 	}
 	
 	public void ConnectListeners() {

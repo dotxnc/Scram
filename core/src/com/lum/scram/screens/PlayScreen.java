@@ -35,16 +35,12 @@ public class PlayScreen implements Screen {
 		server = new GameServer();
 		client = new GameClient();
 		
-		try {
-			if (Core.isServer)
-			{
-				server.ConnectListeners();
-				server.Listen();
-			}
-			client.ConnectListeners();
-			client.Connect();
-		}
-		catch (IOException e) { e.printStackTrace(); }
+		server.ConnectListeners();
+		server.Listen();
+		
+		
+		client.ConnectListeners();
+		client.Connect();
 		
 	}
 
