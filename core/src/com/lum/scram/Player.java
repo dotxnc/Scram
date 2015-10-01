@@ -1,8 +1,8 @@
 package com.lum.scram;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -29,6 +29,9 @@ public class Player {
 	
 	private float x;
 	private float y;
+	
+	
+	private ParticleEffect shipEffect;
 	
 	public Player(float x, float y) {
 		this.x = x;
@@ -62,6 +65,11 @@ public class Player {
 		sprite.setScale(Core.PIM);
 		sprite.setOrigin(sprite.getWidth()/2,sprite.getHeight()/2);
 		
+		shipEffect = new ParticleEffect();
+		shipEffect.load(Gdx.files.internal("ship.particle"), Gdx.files.internal(""));
+		shipEffect.scaleEffect(Core.PIM/2f);
+		shipEffect.start();
+		
 	}
 	
 	public void dispose() {
@@ -77,24 +85,36 @@ public class Player {
 		return new Vector3(x, y, rot);
 	}
 	
-	public void Render(SpriteBatch batch) {
+	public void Render(SpriteBatch batch, float delta) {
 		batch.setProjectionMatrix(Core.mainCam.combined);
 		batch.begin();
 		
-		for (Map.Entry<Integer, Player> playerEntry : Core.players.entrySet()) {
-			if (body != null) {
-				Vector2 pos = body.getPosition();
-				float rot = body.getAngle();
-				sprite.setPosition(body.getTransform().getPosition().x - sprite.getOriginX(), body.getTransform().getPosition().y - sprite.getOriginY());
-				sprite.setRotation(body.getAngle()*MathUtils.radiansToDegrees);
-				sprite.draw(batch);
-				
-				// floating point fix
-				Vector2 vel = body.getLinearVelocity();
-				float normal = (vel.x+vel.y)/2;
-				if (Math.abs(normal) < 0.01f)
-					body.setLinearVelocity(0, 0);
-			}
+		if (body != null) {
+			Vector2 vel = body.getLinearVelocity();
+			Vector2 pos = body.getPosition();
+			float rot = body.getAngle();
+			
+			float normal = vel.len();
+			batch.setProjectionMatrix(Core.hudCam.combined);
+				Core.font.draw(batch, "Vel = "+normal, 10, 95);
+			batch.setProjectionMatrix(Core.mainCam.combined);
+			
+			if (normal < 4)
+				shipEffect.allowCompletion();
+			else
+				shipEffect.start();
+			
+			shipEffect.setPosition(pos.x, pos.y);
+			shipEffect.update(delta);
+			shipEffect.draw(batch);
+			
+			sprite.setPosition(body.getTransform().getPosition().x - sprite.getOriginX(), body.getTransform().getPosition().y - sprite.getOriginY());
+			sprite.setRotation(body.getAngle()*MathUtils.radiansToDegrees);
+			sprite.draw(batch);
+			
+			// floating point fix
+			if (Math.abs(normal) < 0.1f)
+				body.setLinearVelocity(0, 0);
 		}
 		
 		batch.end();

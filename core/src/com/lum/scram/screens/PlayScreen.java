@@ -84,6 +84,7 @@ public class PlayScreen implements Screen {
 		Core.font.draw(Core.batch, "# Players = " + server.GetConnections(), 10, 25);
 		Core.font.draw(Core.batch, "# Network Bodies = " + Core.players.size(), 10, 40);
 		Core.font.draw(Core.batch, "Connected = " + client.IsConnected(), 10, 65);
+		Core.font.draw(Core.batch, "FPS = " + Gdx.graphics.getFramesPerSecond(), 10, 80);
 		
 		for (Map.Entry<Integer, Player> playerEntry : Core.players.entrySet()) {
 			if (playerEntry.getValue().body == null)
@@ -100,7 +101,7 @@ public class PlayScreen implements Screen {
 		/* UPDATE AND RENDER PLAYERS */
 		
 		for (Map.Entry<Integer, Player> playerEntry : Core.players.entrySet())
-			((Player)playerEntry.getValue()).Render(Core.batch);
+			((Player)playerEntry.getValue()).Render(Core.batch, delta);
 		
 		if (Core.toCreate.contains(client.GetID(), true))
 			return;
@@ -123,13 +124,16 @@ public class PlayScreen implements Screen {
 		
 		// Get delta x/y for velocity impulse
 		float angle = MathUtils.atan2(aimPosition.y - localPlayer.GetPosition().y, aimPosition.x - localPlayer.GetPosition().x);
-		float dx = MathUtils.cos(angle)*50*delta;
-		float dy = MathUtils.sin(angle)*50*delta;
+		float dx = MathUtils.cos(angle)*20*delta;
+		float dy = MathUtils.sin(angle)*20*delta;
 		
 		// player movement	
 		Vector2 vel = localPlayer.GetVelocity();
-		if (Gdx.input.isButtonPressed(Buttons.RIGHT) && vel.x > -10 && vel.x < 10 && vel.y > -10 && vel.y < 10) {
+		if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
 			localPlayer.body.applyLinearImpulse(dx, dy, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
+		}
+		if (Gdx.input.isButtonPressed(Buttons.LEFT) && Gdx.input.justTouched()) {
+			System.out.println("shoot");
 		}
 		
 		localPlayer.body.setTransform(localPlayer.GetPosition().x, localPlayer.GetPosition().y, angle);
