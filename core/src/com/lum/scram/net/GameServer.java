@@ -1,5 +1,6 @@
 package com.lum.scram.net;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -52,9 +53,13 @@ public class GameServer {
 				server.sendToAllUDP(new PlayerLeftPacket(conn.getID()));
 			}
 			
-			public void received(Connection conn, Object obj) {
+			public void received(Connection conn, final Object obj) {
 				if (obj instanceof Packet) {
-					((Packet)obj).HandlePacketServer(server);
+					Gdx.app.postRunnable(new Runnable() {
+						public void run () {
+							((Packet)obj).HandlePacketServer(server);
+						}
+					});
 				}
 			}
 		});
