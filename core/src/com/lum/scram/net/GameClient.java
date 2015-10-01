@@ -21,7 +21,7 @@ public class GameClient {
 	public void Connect() {
 		try {
 			client.start();
-			client.connect(5000, "localhost", 9696, 9696);
+			client.connect(5000, "localhost", 7777, 7777);
 			
 			//client.sendUDP(new PlayerJoinedPacket(client.getID()));
 		} catch (IOException ex) {

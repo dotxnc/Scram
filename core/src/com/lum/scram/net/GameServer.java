@@ -26,7 +26,7 @@ public class GameServer {
 	public void Listen() {
 		try {
 			server.start();
-			server.bind(9696, 9696);
+			server.bind(7777, 7777);
 		} catch (IOException ex) {
 			Logger.getLogger(GameServer.class.getName()).log(Level.SEVERE, null, ex);
 		}
