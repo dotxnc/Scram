@@ -51,7 +51,7 @@ public class Player {
 		fdef.shape = shape;
 		fdef.density = 0.5f;
 		fdef.friction = 0.5f;
-		fdef.restitution = 1.f;
+		fdef.restitution = 0.f;
 		
 		fixture = body.createFixture(fdef);
 		

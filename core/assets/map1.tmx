@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="32" tileheight="32" nextobjectid="12">
+ <tileset firstgid="1" name="main" tilewidth="32" tileheight="32" tilecount="64">
+  <image source="spritesheet.png" width="256" height="256"/>
+ </tileset>
+ <layer name="map" width="64" height="64">
+  <data encoding="base64" compression="zlib">
+   eJzt1kEKgzAQBdBIV9ZV8UIepUfJUXoUj9KjNCERC10Fagn2PRiGuHDmZ6MhAADZ8MPqUd5rDmE9ckZ6/9Jz/jPNaSX/uea0kv9cc1rJv7uVehw9pyfbXjX7M9X9G3eQvvnhUnp8n9ObvNeWfdjPH3cwlopT7dfUU8Wx9vx8qlnnUmvNv+Q76Dn/P///AgAAAAAAAAAAAAD06AWvfwvY
+  </data>
+ </layer>
+ <objectgroup name="collision">
+  <object id="1" name="object" type="object" x="192" y="576">
+   <polygon points="0,0 96,-96 192,0 160,0 96,-64 32,0"/>
+  </object>
+  <object id="8" name="object" type="object" x="192" y="576">
+   <polygon points="0,0 800,0 800,-288 768,-320 32,-320 0,-288 -32,-288 -32,-352 832,-352 832,32 -32,32 -32,-288 0,-288"/>
+  </object>
+  <object id="9" name="object" type="object" x="832" y="576">
+   <polygon points="0,0 64,-64 96,-64 160,0 128,0 96,-32 96,0 64,0 64,-32 32,0"/>
+  </object>
+  <object id="10" name="object" type="object" x="478.727" y="575.636">
+   <polygon points="0,0 30.5455,-15.3636 36.1818,-15.2727 64,-2.54545 64.1818,-0.454545 65.0909,0 65.4545,-2.81818 94.6364,-16.0909 100.545,-15.5455 128.182,-2.72727 128.364,-0.363636 129.455,-0.363636 129.364,-3 131,-2.63636 158.364,-15.7273 164.182,-15.6364 192.455,-2.54545 192.545,-0.363636 194.091,-0.0909091 194,-2.90909 222.364,-15.6364 228.182,-15.5455 256.455,-2.81818 256.545,0.181818 257.455,0.272727 257.364,-2.63636 259.182,-2.81818 286.545,-15.5455 292.091,-15.7273 321,-2.63636 321.182,0.363636"/>
+  </object>
+ </objectgroup>
+</map>

@@ -135,6 +135,10 @@ public class PlayScreen implements Screen {
 		localPlayer.body.setTransform(localPlayer.GetPosition().x, localPlayer.GetPosition().y, angle);
 		
 		client.SendPosition(localPlayer.GetPosition().x, localPlayer.GetPosition().y, localPlayer.GetPosition().z);
+		
+		if (Core.map != null) {
+			Core.map.render();
+		}
 
 		
 		//debug.render(Core.world, Core.mainCam.combined);

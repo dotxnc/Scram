@@ -27,5 +27,7 @@ public class Core {
 	public static ShapeRenderer srend;
 	public static SpriteBatch batch;
 	
+	public static GameMap map;
+	
 	public static boolean isServer;
 }
