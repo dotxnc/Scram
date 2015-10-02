@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.lum.scram.Core;
 import static com.lum.scram.Core.MIP;
+import com.lum.scram.LaserBeam;
 import com.lum.scram.Player;
 import com.lum.scram.Scram;
 import com.lum.scram.net.GameClient;
@@ -48,6 +49,7 @@ public class PlayScreen implements Screen {
 		Core.world = new World(new Vector2(0, 0), true);
 		Core.players = new HashMap<Integer, Player>();
 		Core.toCreate = new Array<Integer>();
+		Core.beams = new Array<LaserBeam>();
 		
 		server = new GameServer();
 		client = new GameClient();
@@ -106,6 +108,13 @@ public class PlayScreen implements Screen {
 		Core.font.draw(Core.batch, "# Network Bodies = " + Core.players.size(), 10, 40);
 		Core.font.draw(Core.batch, "Connected = " + client.IsConnected(), 10, 65);
 		Core.font.draw(Core.batch, "FPS = " + Gdx.graphics.getFramesPerSecond(), 10, 80);
+		
+		for (int i = 0; i < Core.beams.size; i++) {
+			LaserBeam beam = Core.beams.get(i);
+			beam.render(Core.srend, delta);
+			if (beam.lifetime <= 0)
+				Core.beams.removeIndex(i);
+		}
 		
 		for (Map.Entry<Integer, Player> playerEntry : Core.players.entrySet()) {
 			if (playerEntry.getValue().body == null)

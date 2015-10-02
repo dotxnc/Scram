@@ -18,6 +18,8 @@ public class Core {
 	public static Map<Integer, Player> players;
 	public static Array<Integer> toCreate;
 	
+	public static Array<LaserBeam> beams;
+	
 	public static World world;
 	
 	public static float PIM = 1/32f;
