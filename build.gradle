@@ -36,6 +36,7 @@ project(":desktop") {
         compile project(":core")
 				compile 'net.dermetfan.libgdx-utils:libgdx-utils:0.9.0'
 				compile 'net.dermetfan.libgdx-utils:libgdx-utils-box2d:0.9.0'
+				compile "com.badlogicgames.box2dlights:box2dlights:1.4"
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
 				compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
