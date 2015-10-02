@@ -41,6 +41,8 @@ public class Player {
 	public final float zapMax = 1;
 	public float zapTimer = 0;
 	
+	public PositionalSound zap;
+	
 	public Player(float x, float y, int uid) {
 		this.x = x;
 		this.y = y;
@@ -83,6 +85,8 @@ public class Player {
 		
 		light = new PointLight(rayHandler, 300, Color.WHITE, 20, 6, 50);
 		
+		zap = new PositionalSound("shoot.wav");
+		
 	}
 	
 	public void dispose() {
@@ -105,6 +109,7 @@ public class Player {
 		batch.begin();
 		
 		if (body != null) {
+			zap.setLocation(GetPosition());
 			light.setPosition(GetPosition().x, GetPosition().y);
 			
 			Vector2 vel = body.getLinearVelocity();

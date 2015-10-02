@@ -58,7 +58,6 @@ public class PlayScreen implements Screen {
 		Core.players = new HashMap<Integer, Player>();
 		Core.toCreate = new Array<Integer>();
 		Core.beams = new Array<LaserBeam>();
-		Core.zap = Gdx.audio.newSound(Gdx.files.internal("shoot.wav"));
 		
 		Gdx.graphics.setCursor(Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("crosshair.png")), 16/2, 16/2));
 		
@@ -81,7 +80,7 @@ public class PlayScreen implements Screen {
 			
 		};
 		
-		bloom = new Bloom(800, 600, true, true, true);
+		bloom = new Bloom(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, true, true);
 		bloom.blurPasses = 15;
 		bloom.setTreshold(0.4f);
 		bloom.setBloomIntesity(1.4f);
@@ -209,6 +208,11 @@ public class PlayScreen implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
+		Core.port.update(width, height);
+		Core.port.apply();
+		
+		Core.hudCam.setToOrtho(true, width, height);
+		Core.hudCam.update();
 	}
 
 	@Override

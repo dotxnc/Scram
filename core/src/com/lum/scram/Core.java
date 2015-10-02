@@ -1,6 +1,5 @@
 package com.lum.scram;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -33,6 +32,4 @@ public class Core {
 	public static GameMap map;
 	
 	public static boolean isServer;
-	
-	public static Sound zap;
 }

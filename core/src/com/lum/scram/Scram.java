@@ -14,15 +14,18 @@ public class Scram extends Game {
 	
 	@Override
 	public void create () {
+		float w = Gdx.graphics.getWidth();
+		float h = Gdx.graphics.getHeight();
+		
 		Core.batch = new SpriteBatch();
 		Core.srend = new ShapeRenderer();
 		
 		Core.mainCam = new OrthographicCamera();
-		Core.port = new ExtendViewport(800*PIM, 600*PIM, 1024*PIM, 768*PIM, Core.mainCam);
+		Core.port = new ExtendViewport(w*PIM, h*PIM, (w*2)*PIM, (h*2)*PIM, Core.mainCam);
 		Core.port.apply();
 		
 		Core.hudCam = new OrthographicCamera();
-		Core.hudCam.setToOrtho(true, 800, 600);
+		Core.hudCam.setToOrtho(true, w, h);
 		Core.hudCam.update();
 		
 		Core.batch.setProjectionMatrix(Core.mainCam.combined);

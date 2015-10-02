@@ -8,9 +8,9 @@ import java.lang.Thread.UncaughtExceptionHandler;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 800;
-		config.height = 600;
-		config.resizable = false;
+		config.width = 960;
+		config.height = 540;
+		//config.resizable = false;
 		
 		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			@Override
