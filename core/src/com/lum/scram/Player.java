@@ -30,12 +30,15 @@ public class Player {
 	private float x;
 	private float y;
 	
+	public int uid_local;
+	
 	
 	private ParticleEffect shipEffect;
 	
-	public Player(float x, float y) {
+	public Player(float x, float y, int uid) {
 		this.x = x;
 		this.y = y;
+		this.uid_local = uid;
 	}
 	
 	public void Create() {
@@ -47,6 +50,8 @@ public class Player {
 		bdef.angle = MathUtils.random(360);
 		
 		body = Core.world.createBody(bdef);
+		body.setUserData(this);
+		
 		shape = new PolygonShape();
 		shape.setAsBox(0.5f, 0.5f);
 		

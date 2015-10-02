@@ -3,10 +3,13 @@ package com.lum.scram.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.lum.scram.Core;
@@ -15,6 +18,7 @@ import com.lum.scram.Player;
 import com.lum.scram.Scram;
 import com.lum.scram.net.GameClient;
 import com.lum.scram.net.GameServer;
+import com.lum.scram.net.packets.PlayerShootPacket;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +37,11 @@ public class PlayScreen implements Screen {
 	
 	private Box2DDebugRenderer debug;
 	
+	private Fixture closestFixture;
+	private Vector2 hitPoint;
+	private RayCastCallback callback;
+	private Player localPlayer;
+	
 	public PlayScreen(Scram game) {
 		this.game = game;
 		
@@ -45,7 +54,19 @@ public class PlayScreen implements Screen {
 		
 		debug = new Box2DDebugRenderer();
 		
-		//Core.font.getData().setScale(PIM);
+		callback = new RayCastCallback() {
+
+			@Override
+			public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
+				if (fixture.getBody().getUserData() instanceof Player && ((Player)fixture.getBody().getUserData()).uid_local == localPlayer.uid_local)
+					return -1;
+				
+				closestFixture = fixture;
+				hitPoint = new Vector2().set(point);
+				return fraction;
+			}
+			
+		};
 		
 		if (Core.isServer) {
 			server.ConnectListeners();
@@ -106,7 +127,7 @@ public class PlayScreen implements Screen {
 		if (Core.toCreate.contains(client.GetID(), true))
 			return;
 		
-		Player localPlayer = (Player) Core.players.get(client.GetID());
+		localPlayer = (Player) Core.players.get(client.GetID());
 		
 		if (localPlayer == null || localPlayer.body == null)
 			return;
@@ -133,7 +154,20 @@ public class PlayScreen implements Screen {
 			localPlayer.body.applyLinearImpulse(dx, dy, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
 		}
 		if (Gdx.input.isButtonPressed(Buttons.LEFT) && Gdx.input.justTouched()) {
-			System.out.println("shoot");
+			Vector2 infinite = new Vector2();
+			infinite.x = localPlayer.GetPosition().x+dx*2000;
+			infinite.y = localPlayer.GetPosition().y+dy*2000;
+			Core.world.rayCast(callback, new Vector2(localPlayer.GetPosition().x, localPlayer.GetPosition().y), infinite);
+			
+			if (closestFixture.getBody().getUserData() instanceof Player) {
+				client.Send(new PlayerShootPacket(client.GetID(), ((Player)closestFixture.getBody().getUserData()).uid_local, new Vector2(dx*10, dy*10), hitPoint));
+				
+				Core.srend.setProjectionMatrix(Core.mainCam.combined);
+				Core.srend.begin(ShapeType.Line);
+				Core.srend.circle(hitPoint.x, hitPoint.y, 0.15f, 100);
+				Core.srend.line(new Vector2(localPlayer.GetPosition().x, localPlayer.GetPosition().y), hitPoint);
+				Core.srend.end();
+			}
 		}
 		
 		localPlayer.body.setTransform(localPlayer.GetPosition().x, localPlayer.GetPosition().y, angle);

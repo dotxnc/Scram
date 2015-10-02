@@ -54,5 +54,9 @@ public class GameClient {
 	public void SendPosition(float x, float y, float rot) {
 		client.sendUDP(new PlayerPositionPacket(client.getID(), x, y, rot));
 	}
+	
+	public void Send(Object object) {
+		client.sendUDP(object);
+	}
 		
 }

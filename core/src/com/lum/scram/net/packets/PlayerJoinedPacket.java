@@ -21,7 +21,7 @@ public class PlayerJoinedPacket extends Packet {
 		if (Core.players.containsKey(uid_sender))
 			return;
 		
-		Core.players.put(uid_sender, new Player(x, y));
+		Core.players.put(uid_sender, new Player(x, y, uid_sender));
 		Core.toCreate.add(uid_sender);
 	}
 	
