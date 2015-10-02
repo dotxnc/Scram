@@ -26,7 +26,7 @@ public class LaserBeam {
 		srend.setProjectionMatrix(Core.mainCam.combined);
 		srend.begin(ShapeType.Filled);
 		srend.setColor(MathUtils.random(1), MathUtils.random(1), MathUtils.random(1), lifetime);
-		srend.rectLine(p1, p2, (2*Core.PIM)-(lifetime/4));
+		srend.rectLine(p1, p2, (4*Core.PIM)*lifetime);
 		srend.circle(p2.x, p2.y, (1*Core.PIM)+(lifetime/4), 100);
 		srend.setColor(Color.WHITE);
 		srend.end();

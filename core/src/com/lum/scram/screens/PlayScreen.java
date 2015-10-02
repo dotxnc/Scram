@@ -3,6 +3,7 @@ package com.lum.scram.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -51,6 +52,8 @@ public class PlayScreen implements Screen {
 		Core.players = new HashMap<Integer, Player>();
 		Core.toCreate = new Array<Integer>();
 		Core.beams = new Array<LaserBeam>();
+		
+		Gdx.graphics.setCursor(Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("crosshair.png")), 16/2, 16/2));
 		
 		server = new GameServer();
 		client = new GameClient();
@@ -138,9 +141,9 @@ public class PlayScreen implements Screen {
 			return;
 		
 		// lerp camera to player position
-		float lerpAmt = 0.0001f;	
-		//Vector3 newPos = Core.mainCam.position.lerp(new Vector3(localPlayer.GetPosition().x,localPlayer.GetPosition().y, 0) , (float) (1 - Math.pow(lerpAmt, delta)));
-		Core.mainCam.position.set(localPlayer.GetPosition().x, localPlayer.GetPosition().y, 0);
+		float lerpAmt = 0.001f;	
+		Vector3 newPos = Core.mainCam.position.lerp(new Vector3(localPlayer.GetPosition().x,localPlayer.GetPosition().y, 0) , (float) (1 - Math.pow(lerpAmt, delta)));
+		Core.mainCam.position.set(newPos.x, newPos.y, 0);
 		Core.mainCam.update();
 		
 		// unproject mouse position
