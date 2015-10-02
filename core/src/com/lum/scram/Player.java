@@ -1,6 +1,9 @@
 package com.lum.scram;
 
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -26,13 +29,17 @@ public class Player {
 	private Texture texture;
 	private Sprite sprite;
 	
-	private float x;
-	private float y;
+	private final float x;
+	private final float y;
 	
 	public int uid_local;
 	
-	
+	public PointLight light;
+
 	private ParticleEffect shipEffect;
+	
+	public final float zapMax = 1;
+	public float zapTimer = 0;
 	
 	public Player(float x, float y, int uid) {
 		this.x = x;
@@ -40,7 +47,7 @@ public class Player {
 		this.uid_local = uid;
 	}
 	
-	public void Create() {
+	public void Create(RayHandler rayHandler) {
 		bdef = new BodyDef();
 		bdef.type = BodyType.DynamicBody;
 		bdef.linearDamping = 5;
@@ -74,6 +81,8 @@ public class Player {
 		shipEffect.scaleEffect(Core.PIM/2f);
 		shipEffect.start();
 		
+		light = new PointLight(rayHandler, 300, Color.WHITE, 20, 6, 50);
+		
 	}
 	
 	public void dispose() {
@@ -90,10 +99,14 @@ public class Player {
 	}
 	
 	public void Render(SpriteBatch batch, float delta) {
+		zapTimer -= delta;
+		
 		batch.setProjectionMatrix(Core.mainCam.combined);
 		batch.begin();
 		
 		if (body != null) {
+			light.setPosition(GetPosition().x, GetPosition().y);
+			
 			Vector2 vel = body.getLinearVelocity();
 			Vector2 pos = body.getPosition();
 			float rot = body.getAngle();

@@ -19,7 +19,10 @@ public class PlayerShootPacket extends Packet {
 	}
 	
 	public void HandlePacket() {
-		Core.players.get(uid_hit).body.applyLinearImpulse(direction.x, direction.y, hitPoint.x, hitPoint.y, true);
+		if (!(uid_hit <= 0))
+			Core.players.get(uid_hit).body.applyLinearImpulse(direction.x, direction.y, hitPoint.x, hitPoint.y, true);
+		
+		Core.zap.play();
 		Vector2 pos = Core.players.get(uid_sender).body.getPosition().cpy();
 		Core.beams.add(new LaserBeam(pos, hitPoint, Core.beams.size));
 		

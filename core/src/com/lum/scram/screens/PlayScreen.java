@@ -1,8 +1,12 @@
 package com.lum.scram.screens;
 
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -45,6 +49,8 @@ public class PlayScreen implements Screen {
 	
 	private Bloom bloom;
 	
+	private RayHandler rayHandler;
+	
 	public PlayScreen(Scram game) {
 		this.game = game;
 		
@@ -52,6 +58,7 @@ public class PlayScreen implements Screen {
 		Core.players = new HashMap<Integer, Player>();
 		Core.toCreate = new Array<Integer>();
 		Core.beams = new Array<LaserBeam>();
+		Core.zap = Gdx.audio.newSound(Gdx.files.internal("shoot.wav"));
 		
 		Gdx.graphics.setCursor(Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("crosshair.png")), 16/2, 16/2));
 		
@@ -79,6 +86,13 @@ public class PlayScreen implements Screen {
 		bloom.setTreshold(0.4f);
 		bloom.setBloomIntesity(1.4f);
 		
+		RayHandler.setGammaCorrection(true);
+		RayHandler.useDiffuseLight(true);
+		
+		rayHandler = new RayHandler(Core.world);
+		rayHandler.setAmbientLight(0f, 0f, 0f, 1f);
+		rayHandler.setBlurNum(3);
+		
 		if (Core.isServer) {
 			server.ConnectListeners();
 			server.Listen();
@@ -103,7 +117,7 @@ public class PlayScreen implements Screen {
 		
 		// Generate player bodies
 		for (int i = 0; i < Core.toCreate.size; i++) {
-			Core.players.get(Core.toCreate.get(i)).Create();
+			Core.players.get(Core.toCreate.get(i)).Create(rayHandler);
 			Core.toCreate.removeIndex(i);
 		}
 		
@@ -115,6 +129,7 @@ public class PlayScreen implements Screen {
 				continue;
 			
 			Player p = (Player)playerEntry.getValue();
+			System.out.println(p.GetPosition());
 		}
 		
 		Core.batch.end();
@@ -161,14 +176,18 @@ public class PlayScreen implements Screen {
 		if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
 			localPlayer.body.applyLinearImpulse(dx, dy, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
 		}
-		if (Gdx.input.isButtonPressed(Buttons.LEFT) && Gdx.input.justTouched()) {
+		if (Gdx.input.isButtonPressed(Buttons.LEFT) && Gdx.input.justTouched() && localPlayer.zapTimer <= 0) {
+			localPlayer.zapTimer = localPlayer.zapMax;
+			
 			Vector2 infinite = new Vector2();
 			infinite.x = localPlayer.GetPosition().x+dx*2000;
 			infinite.y = localPlayer.GetPosition().y+dy*2000;
 			Core.world.rayCast(callback, new Vector2(localPlayer.GetPosition().x, localPlayer.GetPosition().y), infinite);
 			
+			int uid = 0;
 			if (closestFixture.getBody().getUserData() instanceof Player)
-				client.Send(new PlayerShootPacket(client.GetID(), ((Player)closestFixture.getBody().getUserData()).uid_local, new Vector2(dx*10, dy*10), hitPoint));
+				uid = ((Player)closestFixture.getBody().getUserData()).uid_local;
+			client.Send(new PlayerShootPacket(client.GetID(), uid, new Vector2(dx*30, dy*30), hitPoint));
 			
 		}
 		
@@ -181,6 +200,10 @@ public class PlayScreen implements Screen {
 		}
 		
 		bloom.render();
+		
+		
+		rayHandler.setCombinedMatrix(Core.mainCam);
+		rayHandler.updateAndRender();
 		
 	}
 

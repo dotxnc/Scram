@@ -21,8 +21,6 @@ public class LaserBeam {
 	public void render(ShapeRenderer srend, float delta) {
 		lifetime -= delta;
 		
-		System.out.println(lifetime);
-		
 		srend.setProjectionMatrix(Core.mainCam.combined);
 		srend.begin(ShapeType.Filled);
 		srend.setColor(MathUtils.random(1), MathUtils.random(1), MathUtils.random(1), lifetime);
