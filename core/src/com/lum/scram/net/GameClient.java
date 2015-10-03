@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.lum.scram.Core;
 import com.lum.scram.net.packets.Packet;
 import com.lum.scram.net.packets.PlayerPositionPacket;
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class GameClient {
 	public void Connect() {
 		try {
 			client.start();
-			client.connect(5000, "localhost", 7777, 7777);
+			client.connect(5000, Core.netip, Core.netport, Core.netport);
 			
 			//client.sendUDP(new PlayerJoinedPacket(client.getID()));
 		} catch (IOException ex) {

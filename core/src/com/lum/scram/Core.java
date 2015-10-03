@@ -32,4 +32,7 @@ public class Core {
 	public static GameMap map;
 	
 	public static boolean isServer;
+	
+	public static String netip = "localhost";
+	public static int netport = 7777;
 }
