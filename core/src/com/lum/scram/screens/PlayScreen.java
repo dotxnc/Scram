@@ -1,12 +1,10 @@
 package com.lum.scram.screens;
 
-import box2dLight.PointLight;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -172,9 +170,16 @@ public class PlayScreen implements Screen {
 		
 		// player movement	
 		Vector2 vel = localPlayer.GetVelocity();
-		if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
-			localPlayer.body.applyLinearImpulse(dx, dy, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
-		}
+		
+		if (Gdx.input.isKeyPressed(Keys.W))
+			localPlayer.body.applyLinearImpulse(0, 20*delta, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
+		if (Gdx.input.isKeyPressed(Keys.S))
+			localPlayer.body.applyLinearImpulse(0, -20*delta, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
+		if (Gdx.input.isKeyPressed(Keys.A))
+			localPlayer.body.applyLinearImpulse(-20*delta, 0, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
+		if (Gdx.input.isKeyPressed(Keys.D))
+			localPlayer.body.applyLinearImpulse(20*delta, 0, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
+		
 		if (Gdx.input.isButtonPressed(Buttons.LEFT) && Gdx.input.justTouched() && localPlayer.zapTimer <= 0) {
 			localPlayer.zapTimer = localPlayer.zapMax;
 			

@@ -109,7 +109,7 @@ public class Player {
 		batch.begin();
 		
 		if (body != null) {
-			zap.setLocation(GetPosition());
+			//zap.setLocation(GetPosition());
 			light.setPosition(GetPosition().x, GetPosition().y);
 			
 			Vector2 vel = body.getLinearVelocity();
