@@ -9,7 +9,7 @@ public class GameMap {
 	
 	private Box2DMapObjectParser collisionParser;
 	private TiledMap tmap;
-	private OrthogonalTiledMapRenderer tiledRenderer;
+	public OrthogonalTiledMapRenderer tiledRenderer;
 	
 	public GameMap(String map) {
 		LoadMap(map);

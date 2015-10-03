@@ -56,7 +56,30 @@ public class PositionalSound
 					calPan = (float)(cameraPosition.x - location.x)/maxPan;
 				}		
 			}
-
+		}
+		else if(cameraPosition.x < location.x) //sound is on right
+		{
+			//Calculate pan left side
+			if(cameraPosition.x - location.x > maxPan)//for max sound RIGHT SIDE
+			{
+				calPan = -1;
+			}
+			else if(cameraPosition.x - location.x < maxPan)
+			{
+				calPan = -(float)(cameraPosition.x - location.x)/maxPan;
+			}
+			else//right side
+			{
+				//Calculate pan right side
+				if(cameraPosition.x + location.x > maxPan)//for max sound RIGHT SIDE
+				{
+					calPan = 1;
+				}
+				else if(cameraPosition.x + location.x < maxPan)
+				{
+					calPan = (float)(cameraPosition.x - location.x)/maxPan;
+				}		
+			}
 		}
 		pan = calPan;
 

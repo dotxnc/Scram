@@ -1,5 +1,6 @@
 package com.lum.scram.screens;
 
+import box2dLight.PointLight;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.lum.scram.Background;
 import com.lum.scram.Core;
 import com.lum.scram.LaserBeam;
 import com.lum.scram.Player;
@@ -48,6 +50,8 @@ public class PlayScreen implements Screen {
 	private Bloom bloom;
 	
 	private RayHandler rayHandler;
+	
+	private Background bg;
 	
 	public PlayScreen(Scram game) {
 		this.game = game;
@@ -87,8 +91,12 @@ public class PlayScreen implements Screen {
 		RayHandler.useDiffuseLight(true);
 		
 		rayHandler = new RayHandler(Core.world);
-		rayHandler.setAmbientLight(0f, 0f, 0f, 1f);
+		rayHandler.setAmbientLight(0f, 0f, 0f, 0.25f);
+		rayHandler.setShadows(true);
 		rayHandler.setBlurNum(3);
+		//new PointLight(rayHandler, 120);
+		
+		bg = new Background();
 		
 		if (Core.isServer) {
 			server.ConnectListeners();
@@ -107,7 +115,12 @@ public class PlayScreen implements Screen {
 	@Override
 	public void render(float delta) {
 		
+		bloom.setTreshold(0.4f);
+		bloom.setBloomIntesity(2);
 		bloom.capture();
+		
+		// TODO: fix up background
+		//bg.render(Core.srend, delta);
 		
 		// Update world
 		Core.world.step(1/60.f, 8, 6);
@@ -126,7 +139,6 @@ public class PlayScreen implements Screen {
 				continue;
 			
 			Player p = (Player)playerEntry.getValue();
-			System.out.println(p.GetPosition());
 		}
 		
 		Core.batch.end();
@@ -182,6 +194,7 @@ public class PlayScreen implements Screen {
 		
 		if (Gdx.input.isButtonPressed(Buttons.LEFT) && Gdx.input.justTouched() && localPlayer.zapTimer <= 0) {
 			localPlayer.zapTimer = localPlayer.zapMax;
+			localPlayer.body.applyLinearImpulse(-dx*20, -dy*20, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
 			
 			Vector2 infinite = new Vector2();
 			infinite.x = localPlayer.GetPosition().x+dx*2000;
