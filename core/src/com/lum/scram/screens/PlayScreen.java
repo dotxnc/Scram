@@ -48,7 +48,6 @@ public class PlayScreen implements Screen {
 	private Player localPlayer;
 	
 	private Bloom bloom;
-	private RayHandler rayHandler;
 	private Background bg;
 	
 	private float time = 0f;
@@ -85,15 +84,6 @@ public class PlayScreen implements Screen {
 		bloom.setTreshold(0.4f);
 		bloom.setBloomIntesity(1.4f);
 		
-		RayHandler.setGammaCorrection(true);
-		RayHandler.useDiffuseLight(true);
-		
-		rayHandler = new RayHandler(Core.world);
-		rayHandler.setAmbientLight(0.15f, 0.15f, 0.15f, 0.25f);
-		rayHandler.setShadows(true);
-		rayHandler.setBlurNum(3);
-		//new PointLight(rayHandler, 120);
-		
 		bg = new Background();
 		
 		if (Core.isServer) {
@@ -127,7 +117,7 @@ public class PlayScreen implements Screen {
 		
 		// Generate player bodies
 		for (int i = 0; i < Core.toCreate.size; i++) {
-			Core.players.get(Core.toCreate.get(i)).Create(rayHandler);
+			Core.players.get(Core.toCreate.get(i)).Create();
 			Core.toCreate.removeIndex(i);
 		}
 		
@@ -198,7 +188,6 @@ public class PlayScreen implements Screen {
 			localPlayer.body.applyLinearImpulse(40*delta, 0, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
 		
 		if (Gdx.input.isKeyJustPressed(Keys.F5)) {
-			//dispose();
 			client.Disconnect();
 			server.Stop();
 			game.setScreen(new MenuScreen(game));
@@ -253,7 +242,6 @@ public class PlayScreen implements Screen {
 		server.Stop();
 		
 		Core.world.dispose();
-		rayHandler.dispose();
 		bloom.dispose();
 		
 		Core.beams.clear();

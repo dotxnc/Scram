@@ -62,6 +62,10 @@ public class MenuScreen implements Screen {
 		join.setHeight(25f);
 		join.setPosition(Gdx.graphics.getWidth()/2-100, Gdx.graphics.getHeight()-245);
 		
+		VisTextButton quit = new VisTextButton("Quit");
+		quit.setSize(200, 25);
+		quit.setPosition(Gdx.graphics.getWidth()/2-100, Gdx.graphics.getHeight()-290);
+		
 		
 		host.addListener(new ClickListener() {
 			@Override
@@ -85,10 +89,18 @@ public class MenuScreen implements Screen {
 			}
 		});
 		
+		quit.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				Gdx.app.exit();
+			}
+		});
+		
 		stage.addActor(ip);
 		stage.addActor(port);
 		stage.addActor(host);
 		stage.addActor(join);
+		stage.addActor(quit);
 		
 		Gdx.input.setInputProcessor(stage);
 		

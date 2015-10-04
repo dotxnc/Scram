@@ -33,8 +33,6 @@ public class Player {
 	private final float y;
 	
 	public int uid_local;
-	
-	public PointLight light;
 
 	private ParticleEffect shipEffect;
 	
@@ -51,7 +49,7 @@ public class Player {
 		this.uid_local = uid;
 	}
 	
-	public void Create(RayHandler rayHandler) {
+	public void Create() {
 		bdef = new BodyDef();
 		bdef.type = BodyType.DynamicBody;
 		bdef.linearDamping = 5;
@@ -85,7 +83,6 @@ public class Player {
 		shipEffect.scaleEffect(Core.PIM/2f);
 		shipEffect.start();
 		
-		light = new PointLight(rayHandler, 300, Color.WHITE, 20, 6, 50);
 		zap = new PositionalSound("shoot.wav");
 		
 		body.setTransform(Core.map.getRandomSpawn(), 0);
@@ -113,9 +110,6 @@ public class Player {
 		batch.setColor(Color.WHITE);
 		
 		if (body != null) {
-			//zap.setLocation(GetPosition());
-			light.setPosition(GetPosition().x, GetPosition().y);
-			
 			Vector2 vel = body.getLinearVelocity();
 			Vector2 pos = body.getPosition();
 			float rot = body.getAngle();

@@ -50,7 +50,6 @@ public class GameMap {
 	}
 	
 	public void render() {
-		//Core.mainCam.zoom = 10;
 		tiledRenderer.setView(Core.mainCam);
 		tiledRenderer.render();
 	}
