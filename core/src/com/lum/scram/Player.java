@@ -43,6 +43,8 @@ public class Player {
 	
 	public PositionalSound zap;
 	
+	private boolean findSpawn = true;
+	
 	public Player(float x, float y, int uid) {
 		this.x = x;
 		this.y = y;
@@ -84,8 +86,9 @@ public class Player {
 		shipEffect.start();
 		
 		light = new PointLight(rayHandler, 300, Color.WHITE, 20, 6, 50);
-		
 		zap = new PositionalSound("shoot.wav");
+		
+		body.setTransform(Core.map.getRandomSpawn(), 0);
 		
 	}
 	
@@ -107,6 +110,7 @@ public class Player {
 		
 		batch.setProjectionMatrix(Core.mainCam.combined);
 		batch.begin();
+		batch.setColor(Color.WHITE);
 		
 		if (body != null) {
 			//zap.setLocation(GetPosition());
@@ -117,9 +121,6 @@ public class Player {
 			float rot = body.getAngle();
 			
 			float normal = vel.len();
-			batch.setProjectionMatrix(Core.hudCam.combined);
-				Core.font.draw(batch, "Vel = "+normal, 10, 95);
-			batch.setProjectionMatrix(Core.mainCam.combined);
 			
 			if (normal < 4)
 				shipEffect.allowCompletion();
@@ -132,6 +133,7 @@ public class Player {
 			
 			sprite.setPosition(body.getTransform().getPosition().x - sprite.getOriginX(), body.getTransform().getPosition().y - sprite.getOriginY());
 			sprite.setRotation(body.getAngle()*MathUtils.radiansToDegrees);
+			sprite.setColor(MathUtils.random(1f), MathUtils.random(1f), MathUtils.random(1f), 1);
 			sprite.draw(batch);
 			
 			// floating point fix

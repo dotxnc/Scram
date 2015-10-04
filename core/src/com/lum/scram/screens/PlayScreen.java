@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -47,10 +48,10 @@ public class PlayScreen implements Screen {
 	private Player localPlayer;
 	
 	private Bloom bloom;
-	
 	private RayHandler rayHandler;
-	
 	private Background bg;
+	
+	private float time = 0f;
 	
 	public PlayScreen(Scram game) {
 		this.game = game;
@@ -68,7 +69,6 @@ public class PlayScreen implements Screen {
 		debug = new Box2DDebugRenderer();
 		
 		callback = new RayCastCallback() {
-
 			@Override
 			public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
 				if (fixture.getBody().getUserData() instanceof Player && ((Player)fixture.getBody().getUserData()).uid_local == localPlayer.uid_local)
@@ -78,7 +78,6 @@ public class PlayScreen implements Screen {
 				hitPoint = new Vector2().set(point);
 				return fraction;
 			}
-			
 		};
 		
 		bloom = new Bloom(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, true, true);
@@ -90,7 +89,7 @@ public class PlayScreen implements Screen {
 		RayHandler.useDiffuseLight(true);
 		
 		rayHandler = new RayHandler(Core.world);
-		rayHandler.setAmbientLight(0f, 0f, 0f, 0.25f);
+		rayHandler.setAmbientLight(0.15f, 0.15f, 0.15f, 0.25f);
 		rayHandler.setShadows(true);
 		rayHandler.setBlurNum(3);
 		//new PointLight(rayHandler, 120);
@@ -114,8 +113,10 @@ public class PlayScreen implements Screen {
 	@Override
 	public void render(float delta) {
 		
-		bloom.setTreshold(0.4f);
-		bloom.setBloomIntesity(2);
+		time += delta;
+		
+		bloom.setTreshold(0.f);
+		bloom.setBloomIntesity(2.5f);
 		bloom.capture();
 		
 		// TODO: fix up background
@@ -129,6 +130,11 @@ public class PlayScreen implements Screen {
 			Core.players.get(Core.toCreate.get(i)).Create(rayHandler);
 			Core.toCreate.removeIndex(i);
 		}
+		
+		// render map
+		if (Core.map != null) {
+			Core.map.render();
+		};
 		
 		// Player rendering
 		Core.batch.setProjectionMatrix(Core.hudCam.combined);
@@ -183,13 +189,13 @@ public class PlayScreen implements Screen {
 		Vector2 vel = localPlayer.GetVelocity();
 		
 		if (Gdx.input.isKeyPressed(Keys.W))
-			localPlayer.body.applyLinearImpulse(0, 20*delta, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
+			localPlayer.body.applyLinearImpulse(0, 40*delta, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
 		if (Gdx.input.isKeyPressed(Keys.S))
-			localPlayer.body.applyLinearImpulse(0, -20*delta, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
+			localPlayer.body.applyLinearImpulse(0, -40*delta, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
 		if (Gdx.input.isKeyPressed(Keys.A))
-			localPlayer.body.applyLinearImpulse(-20*delta, 0, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
+			localPlayer.body.applyLinearImpulse(-40*delta, 0, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
 		if (Gdx.input.isKeyPressed(Keys.D))
-			localPlayer.body.applyLinearImpulse(20*delta, 0, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
+			localPlayer.body.applyLinearImpulse(40*delta, 0, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
 		
 		if (Gdx.input.isKeyJustPressed(Keys.F5)) {
 			//dispose();
@@ -217,17 +223,7 @@ public class PlayScreen implements Screen {
 		localPlayer.body.setTransform(localPlayer.GetPosition().x, localPlayer.GetPosition().y, angle);
 		client.SendPosition(localPlayer.GetPosition().x, localPlayer.GetPosition().y, localPlayer.GetPosition().z);
 		
-		// render map
-		if (Core.map != null) {
-			Core.map.render();
-		}
-		
 		bloom.render();
-		
-		
-		rayHandler.setCombinedMatrix(Core.mainCam);
-		rayHandler.updateAndRender();
-		
 	}
 
 	@Override
