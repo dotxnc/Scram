@@ -33,4 +33,9 @@ public class GameMap {
 		tiledRenderer.render();
 	}
 	
+	public void dispose() {
+		tiledRenderer.dispose();
+		tmap.dispose();
+	}
+	
 }

@@ -59,5 +59,9 @@ public class GameClient {
 	public void Send(Object object) {
 		client.sendUDP(object);
 	}
+	
+	public void Disconnect() {
+		client.stop();
+	}
 		
 }

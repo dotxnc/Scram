@@ -1,6 +1,5 @@
 package com.lum.scram.screens;
 
-import box2dLight.PointLight;
 import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
@@ -192,6 +191,13 @@ public class PlayScreen implements Screen {
 		if (Gdx.input.isKeyPressed(Keys.D))
 			localPlayer.body.applyLinearImpulse(20*delta, 0, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
 		
+		if (Gdx.input.isKeyJustPressed(Keys.F5)) {
+			//dispose();
+			client.Disconnect();
+			server.Stop();
+			game.setScreen(new MenuScreen(game));
+		}
+		
 		if (Gdx.input.isButtonPressed(Buttons.LEFT) && Gdx.input.justTouched() && localPlayer.zapTimer <= 0) {
 			localPlayer.zapTimer = localPlayer.zapMax;
 			localPlayer.body.applyLinearImpulse(-dx*20, -dy*20, localPlayer.GetPosition().x, localPlayer.GetPosition().y, true);
@@ -247,6 +253,17 @@ public class PlayScreen implements Screen {
 
 	@Override
 	public void dispose() {
+		client.Disconnect();
+		server.Stop();
+		
+		Core.world.dispose();
+		rayHandler.dispose();
+		bloom.dispose();
+		
+		Core.beams.clear();
+		Core.players.clear();
+		Core.toCreate.clear();
+		Core.map.dispose();
 	}
 
 }

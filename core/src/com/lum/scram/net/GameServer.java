@@ -70,4 +70,8 @@ public class GameServer {
 	public int GetConnections() {
 		return server.getConnections().length;
 	}
+	
+	public void Stop() {
+		server.stop();
+	}
 }
