@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.esotericsoftware.kryonet.Server;
 import com.lum.scram.Core;
 import com.lum.scram.LaserBeam;
+import com.lum.scram.screens.PlayScreen;
 
 public class PlayerShootPacket extends Packet {
 	public int uid_hit;
@@ -27,6 +28,10 @@ public class PlayerShootPacket extends Packet {
 		Core.players.get(uid_sender).zap.setLocation(new Vector3(hitPoint.x, hitPoint.y, 0));
 		Vector2 pos = Core.players.get(uid_sender).body.getPosition().cpy();
 		Core.beams.add(new LaserBeam(pos, hitPoint, Core.beams.size));
+		
+		if (Core.localPlayer.uid_local == uid_hit) {
+			PlayScreen.shakeScreen();
+		}
 		
 	}
 	

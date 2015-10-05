@@ -1,0 +1,59 @@
+#ifdef GL_ES
+	#define PRECISION mediump
+	precision PRECISION float;
+#else
+	#define PRECISION
+#endif
+
+uniform sampler2D u_texture0;
+
+varying vec2 v_texCoords;
+
+uniform float time;
+uniform float AMPLITUDE;
+uniform float SPEED;
+
+float hash( float n )
+{
+    return fract(sin(n)*43758.5453);
+}
+
+float noise( in vec3 x )
+{
+    vec3 p = floor(x);
+    vec3 f = fract(x);
+
+    f = f*f*(3.0-2.0*f);
+
+    float n = p.x + p.y*57.0 + 113.0*p.z;
+
+    float res = mix(mix(mix( hash(n+  0.0), hash(n+  1.0),f.x),
+                        mix( hash(n+ 57.0), hash(n+ 58.0),f.x),f.y),
+                    mix(mix( hash(n+113.0), hash(n+114.0),f.x),
+                        mix( hash(n+170.0), hash(n+171.0),f.x),f.y),f.z);
+    return res;
+}
+
+void main()
+{
+	vec2 uv = vec2((v_texCoords.x),(v_texCoords.y));
+	
+	float blurx = noise(vec3(time * SPEED * 10.0, 0.0, 0.0)) * 2.0 - 1.0;
+	float offsetx = blurx * 0.025;
+	
+	float blury = noise(vec3(time * SPEED * 10.0, 1.0, 0.0)) * 2.0 - 1.0;
+	float offsety = blury * 0.01;
+	
+		
+	vec2 ruv = uv + vec2(offsetx, offsety) * AMPLITUDE;
+	vec2 guv = uv + vec2(-offsetx, -offsety)* AMPLITUDE;
+	vec2 buv = uv + vec2(0.00, 0.0);
+	
+	float r = texture2D(u_texture0, ruv).r;
+	float g = texture2D(u_texture0, guv).g;
+	float b = texture2D(u_texture0, buv).b;
+	
+	gl_FragColor = vec4(r, g, b, 1.0);
+}
+
+

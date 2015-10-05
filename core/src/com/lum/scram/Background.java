@@ -4,32 +4,39 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 public class Background {
 	public float timer = 0;
+	private Array<Vector2> stars;
 	
 	public Background() {
-		
+		stars = new Array<Vector2>();
+		for (int i = 0; i < 150; i++)
+			stars.add(new Vector2(MathUtils.random(Gdx.graphics.getWidth()), MathUtils.random(Gdx.graphics.getHeight())));
 	}
 	
 	public void render(ShapeRenderer srend, float delta) {
-		if (Core.map == null)
+		if (Core.map == null || Core.localPlayer == null)
 			return;
 		
 		timer += delta;
-		srend.setProjectionMatrix(Core.mainCam.combined);
-		srend.begin(ShapeType.Line);
-		float size = 20*Core.PIM;
-		for (int i = 0; i < 100*32/20; i++) {
-			for (int j = 0; j < 100*32/20; j++) {
-				float offsetX = MathUtils.cos(1*timer)*MathUtils.random(1, 2)*Core.PIM;
-				float offsetY = MathUtils.sin(1*timer)*MathUtils.random(1, 2)*Core.PIM;
-				
-				srend.setColor(0.5f + MathUtils.cos(1*timer)/2, 0.5f + MathUtils.sin(1*timer)/2, 0.5f + MathUtils.sin(1*timer)/2, 0.4f);
-				Gdx.gl20.glLineWidth(2);
-				srend.rect((i*size)+offsetX, (j*size), size, size);
-				//srend.rect(i*20, j*20, 20, 20);
-			}
+		srend.setProjectionMatrix(Core.hudCam.combined);
+		srend.begin(ShapeType.Filled);
+		srend.setColor(0.5f, 0.5f, 0.5f, 1);
+		
+		for (Vector2 star : stars) {
+			
+			star.x -= Core.localPlayer.GetVelocity().x/2;
+			star.y += Core.localPlayer.GetVelocity().y/2;
+			
+			if (star.x < 0) star.x = Gdx.graphics.getWidth();
+			if (star.x > Gdx.graphics.getWidth()) star.x = 0;
+			if (star.y < 0) star.y = Gdx.graphics.getHeight();
+			if (star.y > Gdx.graphics.getHeight()) star.y = 0;
+			
+			srend.circle(star.x, star.y, 2, 100);
 		}
 		
 		srend.end();

@@ -1,7 +1,5 @@
 package com.lum.scram;
 
-import box2dLight.PointLight;
-import box2dLight.RayHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -31,6 +29,8 @@ public class Player {
 	
 	private final float x;
 	private final float y;
+	
+	public float dx,dy;
 	
 	public int uid_local;
 
@@ -114,6 +114,9 @@ public class Player {
 			Vector2 pos = body.getPosition();
 			float rot = body.getAngle();
 			
+			dx = MathUtils.cos(rot);
+			dy = MathUtils.sin(rot);
+			
 			float normal = vel.len();
 			
 			if (normal < 4)
@@ -144,6 +147,10 @@ public class Player {
 	
 	public Vector2 GetVelocity() {
 		return body.getLinearVelocity();
+	}
+	
+	public float getRealVelocity() {
+		return body.getLinearVelocity().len();
 	}
 	
 }
