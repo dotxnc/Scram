@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -38,10 +40,15 @@ public class Player {
 	
 	public final float zapMax = 1;
 	public float zapTimer = 0;
+	public float deathTimer = 5;
+	public boolean dead = false;
 	
 	public PositionalSound zap;
 	
 	private boolean findSpawn = true;
+	
+	public float health = 100;
+	public float display = 100;
 	
 	public Player(float x, float y, int uid) {
 		this.x = x;
@@ -105,6 +112,22 @@ public class Player {
 	public void Render(SpriteBatch batch, float delta) {
 		zapTimer -= delta;
 		
+		display = MathUtils.lerp(display, health, 0.05f);
+		
+		if (health <= 0)
+			dead = true;
+		
+		if (dead) {
+			deathTimer -= delta;
+			if (deathTimer < 0) {
+				dead = false;
+				deathTimer = 5;
+				body.setTransform(Core.map.getRandomSpawn(), 0);
+				health = 100;
+				display = 100;
+			}
+		}
+		
 		batch.setProjectionMatrix(Core.mainCam.combined);
 		batch.begin();
 		batch.setColor(Color.WHITE);
@@ -139,6 +162,21 @@ public class Player {
 		}
 		
 		batch.end();
+		
+		
+		if (Core.localPlayer != null && Core.localPlayer.uid_local != uid_local) return;
+		
+		ShapeRenderer srend = Core.srend;
+		srend.setProjectionMatrix(Core.hudCam.combined);
+		srend.setAutoShapeType(true);
+		srend.begin(ShapeType.Filled);
+		srend.setColor(Color.WHITE);
+		srend.set(ShapeType.Filled);
+		srend.rect(10, 10, display*2, 10);
+		srend.set(ShapeType.Line);
+		srend.rect(8, 8, 200+4, 14);
+		srend.end();
+		
 	}
 	
 	public void HandleInput() {

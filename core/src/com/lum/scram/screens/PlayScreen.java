@@ -5,6 +5,8 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -23,11 +25,9 @@ import com.lum.scram.net.GameServer;
 import com.lum.scram.net.packets.PlayerShootPacket;
 import com.lum.scram.postprocessing.PostProcessor;
 import com.lum.scram.postprocessing.effects.Bloom;
-import com.lum.scram.postprocessing.effects.CrtMonitor;
 import com.lum.scram.postprocessing.effects.Curvature;
 import com.lum.scram.postprocessing.effects.Glitcher;
 import com.lum.scram.postprocessing.filters.Blur.BlurType;
-import com.lum.scram.postprocessing.filters.CrtScreen;
 import com.lum.scram.postprocessing.filters.CrtScreen.Effect;
 import java.util.HashMap;
 import java.util.Map;
@@ -241,6 +241,29 @@ public class PlayScreen implements Screen {
 		
 		Core.localPlayer.body.setTransform(Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y, angle);
 		client.SendPosition(Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y, Core.localPlayer.GetPosition().z);
+		
+		if (Core.localPlayer.dead) {
+			ShapeRenderer srend = Core.srend;
+			SpriteBatch batch = Core.batch;
+			
+			srend.setProjectionMatrix(Core.hudCam.combined);
+			srend.begin(ShapeRenderer.ShapeType.Filled);
+			srend.setColor(0.15f, 0.15f, 0.15f, 0.25f);
+			srend.rect(0, Gdx.graphics.getHeight()/2-50, Gdx.graphics.getWidth(), 100);
+			srend.end();
+			
+			batch.setProjectionMatrix(Core.hudCam.combined);
+			batch.begin();
+			Core.font.draw(batch, "YOU HAVE DIED", Gdx.graphics.getWidth()/2-50, Gdx.graphics.getHeight()/2);
+			Core.font.draw(batch, ""+MathUtils.ceil(Core.localPlayer.deathTimer), Gdx.graphics.getWidth()/2+50, Gdx.graphics.getHeight()/2);
+			batch.end();
+			
+			shakeAmount = 0.15f;
+			shakeSpeed = 1;
+		}
+		
+		if (Gdx.input.isKeyJustPressed(Keys.F4))
+			Core.localPlayer.health = 0;
 		
 		effects.render();
 	}

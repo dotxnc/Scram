@@ -21,8 +21,10 @@ public class PlayerShootPacket extends Packet {
 	}
 	
 	public void HandlePacket() {
-		if (!(uid_hit <= 0))
+		if (!(uid_hit <= 0)) {
 			Core.players.get(uid_hit).body.applyLinearImpulse(direction.x, direction.y, hitPoint.x, hitPoint.y, true);
+			Core.players.get(uid_hit).health -= 20;
+		}
 		
 		Core.players.get(uid_sender).zap.play();
 		Core.players.get(uid_sender).zap.setLocation(new Vector3(hitPoint.x, hitPoint.y, 0));
