@@ -36,7 +36,7 @@ public class GameServer {
 		server.addListener(new Listener() {
 			public void connected(Connection conn) {
 				System.out.println("CONNECTION FROM " + conn.getID());
-				server.sendToUDP(conn.getID(), new LoadMapPacket("map1.tmx"));
+				server.sendToUDP(conn.getID(), new LoadMapPacket("maps/map2.tmx"));
 				server.sendToAllUDP(new PlayerJoinedPacket(conn.getID(), 192*Core.PIM, 50));
 				
 				// Give new client info on all previous clients

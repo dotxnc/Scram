@@ -38,7 +38,7 @@ public class Background {
 			if (star.y < 0) star.y = Gdx.graphics.getHeight();
 			if (star.y > Gdx.graphics.getHeight()) star.y = 0;
 			
-			srend.circle(star.x, star.y, MathUtils.cos(star.z*timer)*3, 100);
+			srend.circle(star.x, star.y, MathUtils.cos(star.z*timer)*3, 4);
 		}
 		
 		srend.end();

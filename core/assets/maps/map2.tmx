@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" nextobjectid="21">
+ <tileset firstgid="1" name="asd" tilewidth="32" tileheight="32" tilecount="64">
+  <image source="spritesheet.png" width="256" height="256"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJzt2WFugjAYBmCcJxAuxNE8GkcbJjQjjI22K6zC8yT9obGkfq9p2s+mAQDgaI9x3DLGOO/5D8s9vam2Q8qc8fP9bfFeN4574dFdMPNlXXPnTfUb/raaL+Oz+nuph72RknmUJo+0eWE/CXtVafKI95j2k9lePxRb1EQedZFHOTHnra3zkzzive4tv9V2aw+LOT/JI21eqPdabWNqKY/v9jrvyiOPPOoij7rk9AZDD3JOHmWE3mBGf3eYP0cedcnN46c7yF49mKvIyaNb9FxW7otDyTVeRdus59Fe8P+LI7zq/bEx2sVveXzdb82Z5j2P+A5nslbvEkJmpNmzZvJIJ4+6yKMu8qiLPOoij7rIoy7yqMte9+hw7ydNbO8jZ+xx7wcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADO5xNP8RN+
+  </data>
+ </layer>
+ <objectgroup name="spawns">
+  <object id="6" name="spawn" type="spawn" x="367" y="283"/>
+  <object id="8" name="spawn" type="spawn" x="673" y="280"/>
+  <object id="9" name="spawn" type="spawn" x="667" y="584"/>
+  <object id="10" name="spawn" type="spawn" x="369" y="583"/>
+  <object id="11" name="spawn" type="spawn" x="1010" y="335"/>
+  <object id="12" name="spawn" type="spawn" x="1401" y="348"/>
+  <object id="13" name="spawn" type="spawn" x="1436" y="651"/>
+  <object id="14" name="spawn" type="spawn" x="938" y="614"/>
+  <object id="16" name="spawn" type="spawn" x="1268" y="847"/>
+  <object id="17" name="spawn" type="spawn" x="1258" y="1088"/>
+  <object id="18" name="spawn" type="spawn" x="664" y="1077"/>
+  <object id="19" name="spawn" type="spawn" x="669" y="846"/>
+  <object id="20" name="spawn" type="spawn" x="975" y="949"/>
+ </objectgroup>
+ <objectgroup name="box2d">
+  <object id="4" type="object" x="512" y="224">
+   <polygon points="0,0 -160,0 -192,32 -192,384 -160,416 192,416 224,384 224,256 256,224 352,224 384,256 384,544 352,576 128,576 96,608 96,864 128,896 768,896 800,864 800,608 768,576 512,576 480,544 480,224 512,192 768,192 800,224 800,448 832,480 992,480 1024,448 1024,64 992,32 416,32 384,64 384,128 352,160 256,160 224,128 224,32 192,0 192,-32 224,-32 256,0 256,96 288,128 320,128 352,96 352,32 384,0 1024,0 1056,32 1056,480 1024,512 800,512 768,480 768,256 736,224 544,224 512,256 512,512 544,544 800,544 832,576 832,896 800,928 96,928 64,896 64,576 96,544 320,544 352,512 352,288 320,256 288,256 256,288 256,416 224,448 -192,448 -224,416 -224,0 -192,-32 192,-32 192,0"/>
+  </object>
+ </objectgroup>
+</map>

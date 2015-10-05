@@ -56,7 +56,6 @@ public class PlayScreen implements Screen {
 	private PostProcessor effects;
 	private Glitcher glitch;
 	private Bloom bloom;
-	private CrtMonitor crt;
 	private Curvature curve;
 	
 	private static float shakeAmount = 0;
@@ -83,18 +82,16 @@ public class PlayScreen implements Screen {
 		
 		int e = Effect.TweakContrast.v | Effect.PhosphorVibrance.v | Effect.Scanlines.v | Effect.Tint.v;
 		
-		crt = new CrtMonitor(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, true, CrtScreen.RgbMode.ChromaticAberrations, e);
 		curve = new Curvature();
 		glitch = new Glitcher();
 		bloom = new Bloom((int) (Gdx.graphics.getWidth()), (int) (Gdx.graphics.getHeight()));
 		bloom.setBaseIntesity(1);
 		bloom.setBlurType(BlurType.Gaussian5x5b);
-		bloom.setBlurPasses(10);
+		bloom.setBlurPasses(20);
 		bloom.setBlurAmount(10);
-		bloom.setBloomIntesity(1.75f);
+		bloom.setBloomIntesity(2.15f);
 		bloom.setBaseSaturation(1.5f);
 		
-		effects.addEffect(crt);
 		effects.addEffect(curve);
 		effects.addEffect(glitch);
 		effects.addEffect(bloom);
