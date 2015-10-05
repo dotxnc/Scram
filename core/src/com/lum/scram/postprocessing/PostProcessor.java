@@ -45,7 +45,8 @@ public final class PostProcessor implements Disposable {
 	private TextureWrap compositeWrapV;
 	private final ItemsManager<PostProcessorEffect> effectsManager = new ItemsManager<PostProcessorEffect>();
 	private static final Array<PingPongBuffer> buffers = new Array<PingPongBuffer>(5);
-	private final Color clearColor = new Color(0.15f, 0.15f, 0.15f, 1);
+	//private final Color clearColor = new Color(0.15f, 0.15f, 0.15f, 1);
+	private final Color clearColor = new Color(0.f, 0.f, 0.f, 1);
 	private int clearBits = GL20.GL_COLOR_BUFFER_BIT;
 	private float clearDepth = 1f;
 	private static Rectangle viewport = new Rectangle();

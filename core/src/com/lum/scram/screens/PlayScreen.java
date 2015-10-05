@@ -23,8 +23,12 @@ import com.lum.scram.net.GameServer;
 import com.lum.scram.net.packets.PlayerShootPacket;
 import com.lum.scram.postprocessing.PostProcessor;
 import com.lum.scram.postprocessing.effects.Bloom;
+import com.lum.scram.postprocessing.effects.CrtMonitor;
+import com.lum.scram.postprocessing.effects.Curvature;
 import com.lum.scram.postprocessing.effects.Glitcher;
 import com.lum.scram.postprocessing.filters.Blur.BlurType;
+import com.lum.scram.postprocessing.filters.CrtScreen;
+import com.lum.scram.postprocessing.filters.CrtScreen.Effect;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,6 +56,8 @@ public class PlayScreen implements Screen {
 	private PostProcessor effects;
 	private Glitcher glitch;
 	private Bloom bloom;
+	private CrtMonitor crt;
+	private Curvature curve;
 	
 	private static float shakeAmount = 0;
 	private static float shakeSpeed = 0;
@@ -75,6 +81,10 @@ public class PlayScreen implements Screen {
 		
 		effects = new PostProcessor(true, true, true);
 		
+		int e = Effect.TweakContrast.v | Effect.PhosphorVibrance.v | Effect.Scanlines.v | Effect.Tint.v;
+		
+		crt = new CrtMonitor(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, true, CrtScreen.RgbMode.ChromaticAberrations, e);
+		curve = new Curvature();
 		glitch = new Glitcher();
 		bloom = new Bloom((int) (Gdx.graphics.getWidth()), (int) (Gdx.graphics.getHeight()));
 		bloom.setBaseIntesity(1);
@@ -84,6 +94,8 @@ public class PlayScreen implements Screen {
 		bloom.setBloomIntesity(1.75f);
 		bloom.setBaseSaturation(1.5f);
 		
+		effects.addEffect(crt);
+		effects.addEffect(curve);
 		effects.addEffect(glitch);
 		effects.addEffect(bloom);
 		
