@@ -292,9 +292,13 @@ public class PlayScreen implements Screen {
 	}
 	
 	private void createShaders(int width, int height) {
+		
 		if (curve != null) effects.removeEffect(curve);
 		if (glitch != null) effects.removeEffect(glitch);
 		if (bloom != null) effects.removeEffect(bloom);
+		
+		if (effects != null) effects.dispose();
+		effects = new PostProcessor(width, height, true, true, true);
 		
 		curve = new Curvature();
 		glitch = new Glitcher();
