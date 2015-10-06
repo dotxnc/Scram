@@ -52,6 +52,7 @@ public class Player {
 	
 	public float health = 100;
 	public float display = 100;
+	public String name = ""; //TODO: Send name over network(on connect maybe). Use name to display who killed you
 	
 	public Player(float x, float y, int uid) {
 		this.x = x;
