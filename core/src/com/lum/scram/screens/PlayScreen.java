@@ -143,18 +143,6 @@ public class PlayScreen implements Screen {
 			Core.map.render();
 		};
 		
-		// Player rendering
-		Core.batch.setProjectionMatrix(Core.hudCam.combined);
-		Core.batch.begin();
-		for (Map.Entry<Integer, Player> playerEntry : Core.players.entrySet()) {
-			if (playerEntry.getValue().body == null)
-				continue;
-			
-			Player p = (Player)playerEntry.getValue();
-		}
-		
-		Core.batch.end();
-		
 		// render laser beams
 		for (int i = 0; i < Core.beams.size; i++) {
 			LaserBeam beam = Core.beams.get(i);
