@@ -240,7 +240,7 @@ public class PlayScreen implements Screen {
 		}
 		
 		Core.localPlayer.body.setTransform(Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y, angle);
-		client.SendPosition(Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y, Core.localPlayer.GetPosition().z);
+		client.SendPosition(Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y, Core.localPlayer.GetPosition().z, Core.localPlayer.normal);
 		
 		if (Core.localPlayer.dead) {
 			ShapeRenderer srend = Core.srend;

@@ -1,7 +1,6 @@
 package com.lum.scram.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
@@ -9,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextArea;
@@ -45,7 +43,6 @@ public class MenuScreen implements Screen {
 		ip.setWidth(100f);
 		ip.setHeight(25f);
 		ip.setPosition(Gdx.graphics.getWidth()/2-110, Gdx.graphics.getHeight()-150);
-		ip.setAlignment(Align.center);
 		
 		final VisTextArea port = new VisTextArea("7777");
 		port.setWidth(100f);
@@ -60,16 +57,23 @@ public class MenuScreen implements Screen {
 		VisTextButton join = new VisTextButton("Join Game");
 		join.setWidth(200f);
 		join.setHeight(25f);
-		join.setPosition(Gdx.graphics.getWidth()/2-100, Gdx.graphics.getHeight()-245);
+		join.setPosition(Gdx.graphics.getWidth()/2-100, Gdx.graphics.getHeight()-250);
+		
+		final VisTextButton video = new VisTextButton("Video Settings");
+		video.setWidth(200f);
+		video.setHeight(25);
+		video.setPosition(Gdx.graphics.getWidth()/2-100, Gdx.graphics.getHeight()-300);
+		video.setDisabled(true);
 		
 		VisTextButton quit = new VisTextButton("Quit");
 		quit.setSize(200, 25);
-		quit.setPosition(Gdx.graphics.getWidth()/2-100, Gdx.graphics.getHeight()-290);
+		quit.setPosition(Gdx.graphics.getWidth()/2-100, Gdx.graphics.getHeight()-350);
 		
 		
 		host.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				VisUI.dispose();
 				Core.isServer = true;
 				Core.netip = ip.getText();
 				Core.netport = Integer.parseInt(port.getText());
@@ -81,11 +85,20 @@ public class MenuScreen implements Screen {
 		join.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				VisUI.dispose();
 				Core.isServer = false;
 				Core.netip = ip.getText();
 				Core.netport = Integer.parseInt(port.getText());
 				Gdx.input.setInputProcessor(null);
 				game.setScreen(new PlayScreen(game));
+			}
+		});
+		
+		video.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				if (video.isDisabled()) return;
+				game.setScreen(new SettingsScreen(game));
 			}
 		});
 		
@@ -100,6 +113,7 @@ public class MenuScreen implements Screen {
 		stage.addActor(port);
 		stage.addActor(host);
 		stage.addActor(join);
+		stage.addActor(video);
 		stage.addActor(quit);
 		
 		Gdx.input.setInputProcessor(stage);
@@ -119,10 +133,8 @@ public class MenuScreen implements Screen {
 		Core.mainCam.update();
 		
 		Core.batch.setProjectionMatrix(Core.hudCam.combined);
-		Core.batch.begin();
 		stage.act(delta);
 		stage.draw();
-		Core.batch.end();
 		
 	}
 

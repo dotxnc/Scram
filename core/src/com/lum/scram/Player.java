@@ -32,6 +32,8 @@ public class Player {
 	private final float x;
 	private final float y;
 	
+	public float normal;
+	
 	public float dx,dy;
 	
 	public int uid_local;
@@ -133,19 +135,21 @@ public class Player {
 		batch.setColor(Color.WHITE);
 		
 		if (body != null) {
+			
 			Vector2 vel = body.getLinearVelocity();
 			Vector2 pos = body.getPosition();
 			float rot = body.getAngle();
 			
+			if (Core.localPlayer != null && uid_local == Core.localPlayer.uid_local)
+				normal = vel.len();
+			
 			dx = MathUtils.cos(rot);
 			dy = MathUtils.sin(rot);
 			
-			float normal = vel.len();
-			
-			if (normal < 4)
-				shipEffect.allowCompletion();
-			else
+			if (normal > 4)
 				shipEffect.start();
+			else
+				shipEffect.allowCompletion();
 			
 			shipEffect.setPosition(pos.x, pos.y);
 			shipEffect.update(delta);
@@ -156,9 +160,10 @@ public class Player {
 			sprite.setColor(MathUtils.random(1f), MathUtils.random(1f), MathUtils.random(1f), 1);
 			sprite.draw(batch);
 			
-			// floating point fix
-			if (Math.abs(normal) < 0.1f)
-				body.setLinearVelocity(0, 0);
+			Core.font.getData().setScale(Core.PIM, -Core.PIM);
+			Core.font.draw(batch, ""+normal, pos.x-20*Core.PIM, pos.y-15*Core.PIM);
+			Core.font.getData().setScale(1);
+			
 		}
 		
 		batch.end();
