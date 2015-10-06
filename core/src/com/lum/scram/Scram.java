@@ -22,7 +22,7 @@ public class Scram extends Game {
 		Core.srend = new ShapeRenderer();
 		
 		Core.mainCam = new OrthographicCamera();
-		Core.port = new ExtendViewport(w*PIM, h*PIM, (w)*PIM, (h)*PIM, Core.mainCam);
+		Core.port = new ExtendViewport(w*PIM, h*PIM, w*PIM, h*PIM, Core.mainCam);
 		Core.port.apply();
 		
 		Core.hudCam = new OrthographicCamera();

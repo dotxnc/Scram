@@ -126,7 +126,6 @@ public class PlayScreen implements Screen {
 		
 		effects.capture();
 		
-		// TODO: fix up background
 		bg.render(Core.srend, delta);
 		
 		// Update world
@@ -149,6 +148,25 @@ public class PlayScreen implements Screen {
 			beam.render(Core.srend, delta);
 			if (beam.lifetime <= 0)
 				Core.beams.removeIndex(i);
+		}
+		
+		// rgb shift if close to player
+		Player closest = null;
+		float dst = 999999999999f;
+		for (Map.Entry<Integer, Player> playerEntry : Core.players.entrySet()) {
+			if (Core.localPlayer==null) break;
+			Player c = (Player)playerEntry.getValue();
+			if (c.uid_local == Core.localPlayer.uid_local) continue;
+			
+			float cdst = c.GetPosition().dst(Core.localPlayer.GetPosition());
+			if (cdst < dst) {
+				dst = cdst;
+				closest = c;
+			}
+		}
+		if (closest != null && closest.dead && dst < 5) {
+			shakeAmount = MathUtils.lerp(shakeAmount, 1, 0.1f);
+			shakeSpeed = MathUtils.lerp(shakeSpeed, 1, 0.1f);
 		}
 		
 		/* UPDATE AND RENDER PLAYERS */
@@ -217,7 +235,7 @@ public class PlayScreen implements Screen {
 		}
 		
 		Core.localPlayer.body.setTransform(Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y, angle);
-		client.SendPosition(Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y, Core.localPlayer.GetPosition().z, Core.localPlayer.normal);
+		client.SendPosition(Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y, Core.localPlayer.GetPosition().z, Core.localPlayer.normal, Core.localPlayer.health);
 		
 		if (Core.localPlayer.dead) {
 			ShapeRenderer srend = Core.srend;

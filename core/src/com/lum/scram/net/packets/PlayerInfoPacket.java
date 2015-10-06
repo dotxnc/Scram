@@ -4,17 +4,18 @@ import com.badlogic.gdx.math.Vector2;
 import com.esotericsoftware.kryonet.Server;
 import com.lum.scram.Core;
 
-public class PlayerPositionPacket extends Packet {
+public class PlayerInfoPacket extends Packet {
 	
-	public float x,y,rot,normal;
+	public float x,y,rot,normal,health;
 	
-	public PlayerPositionPacket() {}
-	public PlayerPositionPacket(int uid, float x, float y, float rot, float normal) {
+	public PlayerInfoPacket() {}
+	public PlayerInfoPacket(int uid, float x, float y, float rot, float normal, float health) {
 		super(uid);
 		this.x = x;
 		this.y = y;
 		this.rot = rot;
 		this.normal = normal;
+		this.health = health;
 	}
 	
 	public void HandlePacket() {
@@ -23,6 +24,7 @@ public class PlayerPositionPacket extends Packet {
 		
 		Core.players.get(uid_sender).body.setTransform(new Vector2(x,y), rot);
 		Core.players.get(uid_sender).normal = normal;
+		Core.players.get(uid_sender).health = health;
 	}
 	
 	public void HandlePacketServer(Server server) {

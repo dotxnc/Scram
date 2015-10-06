@@ -39,6 +39,7 @@ public class Player {
 	public int uid_local;
 
 	private ParticleEffect shipEffect;
+	private ParticleEffect deathEffect;
 	
 	public final float zapMax = 1;
 	public float zapTimer = 0;
@@ -92,6 +93,10 @@ public class Player {
 		shipEffect.scaleEffect(Core.PIM/2f);
 		shipEffect.start();
 		
+		deathEffect = new ParticleEffect();
+		deathEffect.load(Gdx.files.internal("explosion.particle"), Gdx.files.internal(""));
+		deathEffect.scaleEffect(Core.PIM/2f);
+		
 		zap = new PositionalSound("shoot.wav");
 		
 		body.setTransform(Core.map.getRandomSpawn(), 0);
@@ -119,17 +124,6 @@ public class Player {
 		if (health <= 0)
 			dead = true;
 		
-		if (dead) {
-			deathTimer -= delta;
-			if (deathTimer < 0) {
-				dead = false;
-				deathTimer = 5;
-				body.setTransform(Core.map.getRandomSpawn(), 0);
-				health = 100;
-				display = 100;
-			}
-		}
-		
 		batch.setProjectionMatrix(Core.mainCam.combined);
 		batch.begin();
 		batch.setColor(Color.WHITE);
@@ -146,6 +140,21 @@ public class Player {
 			dx = MathUtils.cos(rot);
 			dy = MathUtils.sin(rot);
 			
+			if (dead) {
+				deathEffect.setPosition(pos.x, pos.y);
+				deathEffect.start();
+				deathTimer -= delta;
+				if (deathTimer < 0) {
+					dead = false;
+					deathTimer = 5;
+					body.setTransform(Core.map.getRandomSpawn(), 0);
+					health = 100;
+					display = 100;
+				}
+			}
+			else
+				deathEffect.allowCompletion();
+			
 			if (normal > 4)
 				shipEffect.start();
 			else
@@ -155,10 +164,13 @@ public class Player {
 			shipEffect.update(delta);
 			shipEffect.draw(batch);
 			
+			deathEffect.update(delta);
+			deathEffect.draw(batch);
+			
 			sprite.setPosition(body.getTransform().getPosition().x - sprite.getOriginX(), body.getTransform().getPosition().y - sprite.getOriginY());
 			sprite.setRotation(body.getAngle()*MathUtils.radiansToDegrees);
 			sprite.setColor(MathUtils.random(1f), MathUtils.random(1f), MathUtils.random(1f), 1);
-			sprite.draw(batch);
+			if (!dead) sprite.draw(batch);
 			
 			Core.font.getData().setScale(Core.PIM, -Core.PIM);
 			Core.font.draw(batch, ""+normal, pos.x-20*Core.PIM, pos.y-15*Core.PIM);
