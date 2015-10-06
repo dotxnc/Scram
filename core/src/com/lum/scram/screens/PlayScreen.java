@@ -79,22 +79,9 @@ public class PlayScreen implements Screen {
 		debug = new Box2DDebugRenderer();
 		
 		effects = new PostProcessor(true, true, true);
+		createShaders(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
 		int e = Effect.TweakContrast.v | Effect.PhosphorVibrance.v | Effect.Scanlines.v | Effect.Tint.v;
-		
-		curve = new Curvature();
-		glitch = new Glitcher();
-		bloom = new Bloom((int) (Gdx.graphics.getWidth()), (int) (Gdx.graphics.getHeight()));
-		bloom.setBaseIntesity(1);
-		bloom.setBlurType(BlurType.Gaussian5x5b);
-		bloom.setBlurPasses(20);
-		bloom.setBlurAmount(10);
-		bloom.setBloomIntesity(2.15f);
-		bloom.setBaseSaturation(1.5f);
-		
-		effects.addEffect(curve);
-		effects.addEffect(glitch);
-		effects.addEffect(bloom);
 		
 		callback = new RayCastCallback() {
 			@Override
@@ -208,35 +195,37 @@ public class PlayScreen implements Screen {
 		// player movement	
 		Vector2 vel = Core.localPlayer.GetVelocity();
 		
-		if (Gdx.input.isKeyPressed(Keys.W))
-			Core.localPlayer.body.applyLinearImpulse(0, 40*delta, Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y, true);
-		if (Gdx.input.isKeyPressed(Keys.S))
-			Core.localPlayer.body.applyLinearImpulse(0, -40*delta, Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y, true);
-		if (Gdx.input.isKeyPressed(Keys.A))
-			Core.localPlayer.body.applyLinearImpulse(-40*delta, 0, Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y, true);
-		if (Gdx.input.isKeyPressed(Keys.D))
-			Core.localPlayer.body.applyLinearImpulse(40*delta, 0, Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y, true);
+		if (!Core.localPlayer.dead) {
+			if (Gdx.input.isKeyPressed(Keys.W))
+				Core.localPlayer.body.applyLinearImpulse(0, 40*delta, Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y, true);
+			if (Gdx.input.isKeyPressed(Keys.S))
+				Core.localPlayer.body.applyLinearImpulse(0, -40*delta, Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y, true);
+			if (Gdx.input.isKeyPressed(Keys.A))
+				Core.localPlayer.body.applyLinearImpulse(-40*delta, 0, Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y, true);
+			if (Gdx.input.isKeyPressed(Keys.D))
+				Core.localPlayer.body.applyLinearImpulse(40*delta, 0, Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y, true);
+
+			if (Gdx.input.isButtonPressed(Buttons.LEFT) && Gdx.input.justTouched() && Core.localPlayer.zapTimer <= 0) {
+				Core.localPlayer.zapTimer = Core.localPlayer.zapMax;
+				Core.localPlayer.body.applyLinearImpulse(-dx*20, -dy*20, Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y, true);
+
+				Vector2 infinite = new Vector2();
+				infinite.x = Core.localPlayer.GetPosition().x+dx*2000;
+				infinite.y = Core.localPlayer.GetPosition().y+dy*2000;
+				Core.world.rayCast(callback, new Vector2(Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y), infinite);
+
+				int uid = 0;
+				if (closestFixture.getBody().getUserData() instanceof Player)
+					uid = ((Player)closestFixture.getBody().getUserData()).uid_local;
+				client.Send(new PlayerShootPacket(client.GetID(), uid, new Vector2(dx*30, dy*30), hitPoint));
+
+			}
+		}
 		
 		if (Gdx.input.isKeyJustPressed(Keys.F5)) {
 			client.Disconnect();
 			server.Stop();
 			game.setScreen(new MenuScreen(game));
-		}
-		
-		if (Gdx.input.isButtonPressed(Buttons.LEFT) && Gdx.input.justTouched() && Core.localPlayer.zapTimer <= 0) {
-			Core.localPlayer.zapTimer = Core.localPlayer.zapMax;
-			Core.localPlayer.body.applyLinearImpulse(-dx*20, -dy*20, Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y, true);
-			
-			Vector2 infinite = new Vector2();
-			infinite.x = Core.localPlayer.GetPosition().x+dx*2000;
-			infinite.y = Core.localPlayer.GetPosition().y+dy*2000;
-			Core.world.rayCast(callback, new Vector2(Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y), infinite);
-			
-			int uid = 0;
-			if (closestFixture.getBody().getUserData() instanceof Player)
-				uid = ((Player)closestFixture.getBody().getUserData()).uid_local;
-			client.Send(new PlayerShootPacket(client.GetID(), uid, new Vector2(dx*30, dy*30), hitPoint));
-			
 		}
 		
 		Core.localPlayer.body.setTransform(Core.localPlayer.GetPosition().x, Core.localPlayer.GetPosition().y, angle);
@@ -273,8 +262,15 @@ public class PlayScreen implements Screen {
 		Core.port.update(width, height);
 		Core.port.apply();
 		
-		Core.hudCam.setToOrtho(true, width, height);
+		Core.hudPort.update(width, height);
+		Core.hudPort.apply();
+		Core.hudCam.position.set(Core.hudCam.viewportWidth / 2, Core.hudCam.viewportHeight / 2, 0);
 		Core.hudCam.update();
+		
+		bg = new Background();
+		createShaders(width, height);
+		
+
 	}
 
 	@Override
@@ -305,6 +301,26 @@ public class PlayScreen implements Screen {
 	public static void shakeScreen() {
 		shakeAmount = 5f;
 		shakeSpeed = 5f;
+	}
+	
+	private void createShaders(int width, int height) {
+		if (curve != null) effects.removeEffect(curve);
+		if (glitch != null) effects.removeEffect(glitch);
+		if (bloom != null) effects.removeEffect(bloom);
+		
+		curve = new Curvature();
+		glitch = new Glitcher();
+		bloom = new Bloom(width, height);
+		bloom.setBaseIntesity(1);
+		bloom.setBlurType(BlurType.Gaussian5x5b);
+		bloom.setBlurPasses(20);
+		bloom.setBlurAmount(10);
+		bloom.setBloomIntesity(2.15f);
+		bloom.setBaseSaturation(1.5f);
+		
+		effects.addEffect(curve);
+		effects.addEffect(glitch);
+		effects.addEffect(bloom);
 	}
 
 }

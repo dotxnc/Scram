@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import static com.lum.scram.Core.PIM;
 import com.lum.scram.screens.MenuScreen;
 
@@ -27,6 +28,9 @@ public class Scram extends Game {
 		Core.hudCam = new OrthographicCamera();
 		Core.hudCam.setToOrtho(true, w, h);
 		Core.hudCam.update();
+		
+		Core.hudPort = new ScreenViewport(Core.hudCam);
+		Core.hudPort.apply();
 		
 		Core.batch.setProjectionMatrix(Core.mainCam.combined);
 		

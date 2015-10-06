@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import java.util.Map;
 
 public class Core {
@@ -14,6 +15,7 @@ public class Core {
 	public static OrthographicCamera hudCam;
 	
 	public static ExtendViewport port;
+	public static ScreenViewport hudPort;
 	
 	public static Map<Integer, Player> players;
 	public static Array<Integer> toCreate;
