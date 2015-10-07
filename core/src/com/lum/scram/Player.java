@@ -3,6 +3,7 @@ package com.lum.scram;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -54,10 +55,15 @@ public class Player {
 	public float display = 100;
 	public String name = ""; //TODO: Send name over network(on connect maybe). Use name to display who killed you
 	
-	public Player(float x, float y, int uid) {
+	private GlyphLayout fontLayout;
+	
+	public Player(float x, float y, int uid, String name) {
 		this.x = x;
 		this.y = y;
 		this.uid_local = uid;
+		this.name = name;
+		
+		fontLayout = new GlyphLayout();
 	}
 	
 	public void Create() {
@@ -173,8 +179,11 @@ public class Player {
 			sprite.setColor(MathUtils.random(1f), MathUtils.random(1f), MathUtils.random(1f), 1);
 			if (!dead) sprite.draw(batch);
 			
+			fontLayout.setText(Core.font, name);
+			float w = fontLayout.width;
+			
 			Core.font.getData().setScale(Core.PIM, -Core.PIM);
-			Core.font.draw(batch, ""+normal, pos.x-20*Core.PIM, pos.y-15*Core.PIM);
+			Core.font.draw(batch, name, pos.x-(w/2)*Core.PIM, pos.y+30*Core.PIM);
 			Core.font.getData().setScale(1);
 			
 		}

@@ -1,6 +1,7 @@
 package com.lum.scram.net;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
@@ -24,9 +25,10 @@ public class GameServer {
 	}
 	
 	public void Listen() {
+		Preferences prefs = Gdx.app.getPreferences("Scram");
 		try {
 			server.start();
-			server.bind(Core.netport, Core.netport);
+			server.bind(prefs.getInteger("port"), prefs.getInteger("port"));
 		} catch (IOException ex) {
 			Logger.getLogger(GameServer.class.getName()).log(Level.SEVERE, null, ex);
 		}
@@ -37,7 +39,7 @@ public class GameServer {
 			public void connected(Connection conn) {
 				System.out.println("CONNECTION FROM " + conn.getID());
 				server.sendToTCP(conn.getID(), new LoadMapPacket("maps/map2.tmx"));
-				server.sendToAllTCP(new PlayerJoinedPacket(conn.getID(), 192*Core.PIM, 50));
+				server.sendToAllTCP(new PlayerJoinedPacket(conn.getID(), 192*Core.PIM, 50, ""));
 				
 				// Give new client info on all previous clients
 				for (Map.Entry<Integer, Player> playerEntry : Core.players.entrySet()) {
@@ -45,7 +47,7 @@ public class GameServer {
 					if (p.body == null) continue;
 					float x = p.body.getPosition().x;
 					float y = p.body.getPosition().y;
-					server.sendToTCP(conn.getID(), new PlayerJoinedPacket(playerEntry.getKey(), x, y));
+					server.sendToTCP(conn.getID(), new PlayerJoinedPacket(playerEntry.getKey(), x, y, p.name));
 				}
 				
 			}

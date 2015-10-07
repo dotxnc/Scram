@@ -1,12 +1,13 @@
 package com.lum.scram.net;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.lum.scram.Core;
 import com.lum.scram.net.packets.Packet;
 import com.lum.scram.net.packets.PlayerInfoPacket;
+import com.lum.scram.net.packets.PlayerNamePacket;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,11 +21,13 @@ public class GameClient {
 	}
 	
 	public void Connect() {
+		Preferences prefs = Gdx.app.getPreferences("Scram");
 		try {
 			client.start();
-			client.connect(5000, Core.netip, Core.netport, Core.netport);
+			client.connect(5000, prefs.getString("ip"), prefs.getInteger("port"), prefs.getInteger("port"));
 			
-			//client.sendUDP(new PlayerJoinedPacket(client.getID()));
+			client.sendTCP(new PlayerNamePacket(client.getID(), prefs.getString("name")));
+			
 		} catch (IOException ex) {
 			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
 		}

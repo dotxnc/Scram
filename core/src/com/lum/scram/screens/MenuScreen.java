@@ -45,22 +45,14 @@ public class MenuScreen implements Screen {
 		name.setWidth(200f);
 		name.setHeight(25f);
 		name.setPosition(Gdx.graphics.getWidth()/2-100, Gdx.graphics.getHeight()-100);
-		name.setTextFieldListener(new TextFieldListener() {	
-			@Override
-			public void keyTyped(VisTextField textField, char c) {
-				// TODO Auto-generated method stub
-				Gdx.app.getPreferences("Scram").putString("name", name.getText());
-				Gdx.app.getPreferences("Scram").flush();
-			}
-		});
 		
-		final VisTextArea ip = new VisTextArea("localhost");
-		ip.setWidth(100f);
+		final VisTextArea ip = new VisTextArea(Gdx.app.getPreferences("Scram").getString("ip", "localhost"));
+		ip.setWidth(150f);
 		ip.setHeight(25f);
-		ip.setPosition(Gdx.graphics.getWidth()/2-110, Gdx.graphics.getHeight()-150);
+		ip.setPosition(Gdx.graphics.getWidth()/2-160, Gdx.graphics.getHeight()-150);
 		
-		final VisTextArea port = new VisTextArea("7777");
-		port.setWidth(100f);
+		final VisTextArea port = new VisTextArea(Gdx.app.getPreferences("Scram").getString("port", "7777"));
+		port.setWidth(150f);
 		port.setHeight(25f);
 		port.setPosition(Gdx.graphics.getWidth()/2+10, Gdx.graphics.getHeight()-150);
 		
@@ -90,9 +82,10 @@ public class MenuScreen implements Screen {
 			public void clicked(InputEvent event, float x, float y) {
 				VisUI.dispose();
 				Core.isServer = true;
-				Core.netip = ip.getText();
-				Core.netport = Integer.parseInt(port.getText());
 				Gdx.input.setInputProcessor(null);
+				Gdx.app.getPreferences("Scram").putString("name", name.getText());
+				Gdx.app.getPreferences("Scram").putString("ip", ip.getText());
+				Gdx.app.getPreferences("Scram").putInteger("port", Integer.parseInt(port.getText()));
 				game.setScreen(new PlayScreen(game));
 			}
 		});
@@ -102,9 +95,10 @@ public class MenuScreen implements Screen {
 			public void clicked(InputEvent event, float x, float y) {
 				VisUI.dispose();
 				Core.isServer = false;
-				Core.netip = ip.getText();
-				Core.netport = Integer.parseInt(port.getText());
 				Gdx.input.setInputProcessor(null);
+				Gdx.app.getPreferences("Scram").putString("name", name.getText());
+				Gdx.app.getPreferences("Scram").putString("ip", ip.getText());
+				Gdx.app.getPreferences("Scram").putInteger("port", Integer.parseInt(port.getText()));
 				game.setScreen(new PlayScreen(game));
 			}
 		});
