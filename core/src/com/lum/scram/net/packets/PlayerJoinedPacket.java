@@ -27,7 +27,7 @@ public class PlayerJoinedPacket extends Packet {
 	
 	@Override
 	public void HandlePacketServer(Server server) {
-		server.sendToAllUDP(this);
+		server.sendToAllTCP(this);
 	}
 	
 	

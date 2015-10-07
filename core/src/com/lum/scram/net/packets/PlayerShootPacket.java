@@ -38,7 +38,7 @@ public class PlayerShootPacket extends Packet {
 	}
 	
 	public void HandlePacketServer(Server server) {
-		server.sendToAllUDP(this);
+		server.sendToAllTCP(this);
 	}
 	
 }

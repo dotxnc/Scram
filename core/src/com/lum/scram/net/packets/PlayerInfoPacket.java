@@ -29,7 +29,7 @@ public class PlayerInfoPacket extends Packet {
 	
 	public void HandlePacketServer(Server server) {
 		//server.sendToAllUDP(this);
-		server.sendToAllExceptUDP(uid_sender, this);
+		server.sendToAllExceptTCP(uid_sender, this);
 	}
 	
 }

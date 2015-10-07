@@ -12,6 +12,8 @@ import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextArea;
 import com.kotcrab.vis.ui.widget.VisTextButton;
+import com.kotcrab.vis.ui.widget.VisTextField;
+import com.kotcrab.vis.ui.widget.VisTextField.TextFieldListener;
 import com.lum.scram.Core;
 import com.lum.scram.Scram;
 
@@ -38,6 +40,19 @@ public class MenuScreen implements Screen {
 		
 		VisUI.load();
 		stage = new Stage();
+		
+		final VisTextArea name = new VisTextArea(Gdx.app.getPreferences("Scram").getString("name", System.getProperty("user.name")));
+		name.setWidth(200f);
+		name.setHeight(25f);
+		name.setPosition(Gdx.graphics.getWidth()/2-100, Gdx.graphics.getHeight()-100);
+		name.setTextFieldListener(new TextFieldListener() {	
+			@Override
+			public void keyTyped(VisTextField textField, char c) {
+				// TODO Auto-generated method stub
+				Gdx.app.getPreferences("Scram").putString("name", name.getText());
+				Gdx.app.getPreferences("Scram").flush();
+			}
+		});
 		
 		final VisTextArea ip = new VisTextArea("localhost");
 		ip.setWidth(100f);
@@ -109,6 +124,7 @@ public class MenuScreen implements Screen {
 			}
 		});
 		
+		stage.addActor(name);
 		stage.addActor(ip);
 		stage.addActor(port);
 		stage.addActor(host);

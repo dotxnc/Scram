@@ -57,7 +57,7 @@ public class GameClient {
 	}
 	
 	public void Send(Object object) {
-		client.sendUDP(object);
+		client.sendTCP(object);
 	}
 	
 	public void Disconnect() {

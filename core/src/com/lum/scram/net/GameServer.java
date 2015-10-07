@@ -36,8 +36,8 @@ public class GameServer {
 		server.addListener(new Listener() {
 			public void connected(Connection conn) {
 				System.out.println("CONNECTION FROM " + conn.getID());
-				server.sendToUDP(conn.getID(), new LoadMapPacket("maps/map2.tmx"));
-				server.sendToAllUDP(new PlayerJoinedPacket(conn.getID(), 192*Core.PIM, 50));
+				server.sendToTCP(conn.getID(), new LoadMapPacket("maps/map2.tmx"));
+				server.sendToAllTCP(new PlayerJoinedPacket(conn.getID(), 192*Core.PIM, 50));
 				
 				// Give new client info on all previous clients
 				for (Map.Entry<Integer, Player> playerEntry : Core.players.entrySet()) {
@@ -45,14 +45,14 @@ public class GameServer {
 					if (p.body == null) continue;
 					float x = p.body.getPosition().x;
 					float y = p.body.getPosition().y;
-					server.sendToUDP(conn.getID(), new PlayerJoinedPacket(playerEntry.getKey(), x, y));
+					server.sendToTCP(conn.getID(), new PlayerJoinedPacket(playerEntry.getKey(), x, y));
 				}
 				
 			}
 			
 			public void disconnected(Connection conn) {
 				System.out.println("DISCONNECT FROM " + conn.getID());
-				server.sendToAllUDP(new PlayerLeftPacket(conn.getID()));
+				server.sendToAllTCP(new PlayerLeftPacket(conn.getID()));
 			}
 			
 			public void received(Connection conn, final Object obj) {
