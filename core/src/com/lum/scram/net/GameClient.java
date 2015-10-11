@@ -7,6 +7,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.lum.scram.net.packets.Packet;
 import com.lum.scram.net.packets.PlayerInfoPacket;
+import com.lum.scram.net.packets.PlayerLoginPacket;
 import com.lum.scram.net.packets.PlayerNamePacket;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -26,6 +27,7 @@ public class GameClient {
 			client.start();
 			client.connect(5000, prefs.getString("ip"), prefs.getInteger("port"), prefs.getInteger("port"));
 			
+			client.sendTCP(new PlayerLoginPacket(client.getID()));
 			client.sendTCP(new PlayerNamePacket(client.getID(), prefs.getString("name")));
 			
 		} catch (IOException ex) {

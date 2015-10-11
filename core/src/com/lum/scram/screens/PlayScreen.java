@@ -22,6 +22,7 @@ import com.lum.scram.Player;
 import com.lum.scram.Scram;
 import com.lum.scram.net.GameClient;
 import com.lum.scram.net.GameServer;
+import com.lum.scram.net.MasterClient;
 import com.lum.scram.net.packets.PlayerShootPacket;
 import com.lum.scram.postprocessing.PostProcessor;
 import com.lum.scram.postprocessing.effects.Bloom;
@@ -61,6 +62,8 @@ public class PlayScreen implements Screen {
 	private static float shakeAmount = 0;
 	private static float shakeSpeed = 0;
 	
+	private MasterClient masterClient;
+	
 	private float time = 0f;
 	
 	public PlayScreen(Scram game) {
@@ -75,6 +78,8 @@ public class PlayScreen implements Screen {
 		
 		server = new GameServer();
 		client = new GameClient();
+		
+		masterClient = new MasterClient();
 		
 		debug = new Box2DDebugRenderer();
 		
@@ -104,6 +109,9 @@ public class PlayScreen implements Screen {
 		
 		client.ConnectListeners();
 		client.Connect();
+		
+		masterClient.ConnectListeners();
+		masterClient.Connect();
 		
 	}
 
@@ -230,6 +238,7 @@ public class PlayScreen implements Screen {
 		
 		if (Gdx.input.isKeyJustPressed(Keys.F5)) {
 			client.Disconnect();
+			masterClient.Disconnect();
 			server.Stop();
 			game.setScreen(new MenuScreen(game));
 		}
@@ -295,6 +304,8 @@ public class PlayScreen implements Screen {
 	public void dispose() {
 		client.Disconnect();
 		server.Stop();
+		
+		masterClient.Disconnect();
 		
 		Core.world.dispose();
 		
