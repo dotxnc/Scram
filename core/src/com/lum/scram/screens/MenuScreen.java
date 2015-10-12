@@ -16,6 +16,7 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.VisWindow;
 import com.lum.scram.Core;
 import com.lum.scram.Scram;
+import com.lum.scram.net.packets.Packet;
 import com.lum.scram.net.packets.master.GetServerListPacket;
 
 public class MenuScreen implements Screen {
@@ -168,8 +169,6 @@ public class MenuScreen implements Screen {
 		serverWindow.setSize(460, 300);
 		serverWindow.centerWindow();
 		
-		selected = (String)list.getSelected();
-		
 		final VisScrollPane browser = new VisScrollPane(list);
 		browser.setPosition(0, 0);
 		browser.setWidth(460);
@@ -190,8 +189,10 @@ public class MenuScreen implements Screen {
 		connect.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				Gdx.app.getPreferences("Scram").putString("ip", selected.substring(4));
+				if (selected == null) return;
+				Gdx.app.getPreferences("Scram").putString("ip", Core.servers.get(Integer.parseInt(selected.substring(0,1))).ip);
 				Gdx.app.getPreferences("Scram").putInteger("port", Core.servers.get(Integer.parseInt(selected.substring(0,1))).port);
+				Core.isServer = false;
 				game.setScreen(new PlayScreen(game));
 			}
 		});
@@ -222,12 +223,18 @@ public class MenuScreen implements Screen {
 	}
 
 	@Override
-	public void render(float delta) {
+	public void render(final float delta) {
+		selected = (String)list.getSelected();
+		
 		Core.port.apply();
 		Core.mainCam.update();
 		
 		Core.batch.setProjectionMatrix(Core.hudCam.combined);
-		stage.act(delta);
+		Gdx.app.postRunnable(new Runnable() {
+			public void run () {
+				stage.act(delta);
+			}
+		});
 		stage.draw();
 		
 	}

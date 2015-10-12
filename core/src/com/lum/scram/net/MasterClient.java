@@ -4,6 +4,7 @@ import com.badlogic.gdx.utils.Array;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.lum.scram.Core;
 import com.lum.scram.net.packets.master.AddServerPacket;
 import com.lum.scram.net.packets.master.Data;
 import com.lum.scram.net.packets.master.GetServerListPacket;
@@ -44,6 +45,7 @@ public class MasterClient {
 			public void received(Connection conn, final Object obj) {
 				if (obj instanceof GetServerListPacket) {
 					GetServerListPacket p = (GetServerListPacket)obj;
+					Core.servers = p.list;
 					Array<String> dump = new Array<String>();
 					int index = 0;
 					for (Data d : p.list) {
