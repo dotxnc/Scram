@@ -104,7 +104,8 @@ public class PlayScreen implements Screen {
 			server.ConnectListeners();
 			server.Listen();
 			String name = Gdx.app.getPreferences("Scram").getString("name");
-			Core.masterClient.Send(new AddServerPacket("", name, 7777));
+			int port = Gdx.app.getPreferences("Scram").getInteger("port");
+			Core.masterClient.Send(new AddServerPacket("", name, port));
 		}
 		
 		client.ConnectListeners();

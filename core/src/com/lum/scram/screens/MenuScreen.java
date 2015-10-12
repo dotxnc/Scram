@@ -191,7 +191,7 @@ public class MenuScreen implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				Gdx.app.getPreferences("Scram").putString("ip", selected.substring(4));
-				Gdx.app.getPreferences("Scram").putInteger("port", 7777);
+				Gdx.app.getPreferences("Scram").putInteger("port", Core.servers.get(Integer.parseInt(selected.substring(0,1))).port);
 				game.setScreen(new PlayScreen(game));
 			}
 		});
