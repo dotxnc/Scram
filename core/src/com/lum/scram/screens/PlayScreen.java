@@ -103,7 +103,8 @@ public class PlayScreen implements Screen {
 		if (Core.isServer) {
 			server.ConnectListeners();
 			server.Listen();
-			Core.masterClient.Send(new AddServerPacket("", 7777));
+			String name = Gdx.app.getPreferences("Scram").getString("name");
+			Core.masterClient.Send(new AddServerPacket("", name, 7777));
 		}
 		
 		client.ConnectListeners();
@@ -294,6 +295,7 @@ public class PlayScreen implements Screen {
 
 	@Override
 	public void hide() {
+		Core.masterClient.Send(new RemoveServerPacket());
 	}
 
 	@Override

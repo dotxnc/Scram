@@ -32,11 +32,11 @@ public class MasterClient {
 	public void Connect() {
 		try {
 			client.start();
-			client.connect(5000, "localhost", 7779, 7779);
+			client.connect(5000, "104.236.57.226", 7779, 7779);
 		} catch (IOException ex) {
 			Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
 		}
-		Send(new GetServerListPacket());
+		
 	}
 	
 	public void ConnectListeners() {
@@ -46,12 +46,9 @@ public class MasterClient {
 					GetServerListPacket p = (GetServerListPacket)obj;
 					Array<String> dump = new Array<String>();
 					for (Data d : p.list) {
-						dump.add(d.ip);
+						dump.add(d.hoster + "'s game");
 					}
-					//MenuScreen.setServerList(dump.toArray());
-					MenuScreen.setServerList(p.list.toArray());
-					
-					System.out.println(p.list.size());
+					MenuScreen.setServerList(dump.toArray());
 				}
 			}
 		});

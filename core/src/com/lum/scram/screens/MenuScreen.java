@@ -150,6 +150,8 @@ public class MenuScreen implements Screen {
 		
 		Core.isServer = false;
 		
+		Core.masterClient.Send(new GetServerListPacket());
+		
 	}
 	
 	public static void setServerList(Object[] l) {
