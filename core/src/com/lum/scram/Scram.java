@@ -34,6 +34,9 @@ public class Scram extends Game {
 		
 		Core.batch.setProjectionMatrix(Core.mainCam.combined);
 		
+		Core.masterClient.ConnectListeners();
+		Core.masterClient.Connect();
+		
 		
 		this.setScreen(new MenuScreen(this));
 	}

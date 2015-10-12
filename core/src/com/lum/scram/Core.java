@@ -8,6 +8,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.lum.scram.net.MasterClient;
+import com.lum.scram.net.packets.master.Data;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class Core {
@@ -36,4 +39,7 @@ public class Core {
 	public static boolean isServer;
 	
 	public static Player localPlayer;
+	
+	public static MasterClient masterClient = new MasterClient();
+	public static ArrayList<Data> servers = new ArrayList<Data>();
 }

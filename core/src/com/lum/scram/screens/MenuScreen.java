@@ -6,24 +6,27 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.kotcrab.vis.ui.VisUI;
+import com.kotcrab.vis.ui.widget.VisList;
+import com.kotcrab.vis.ui.widget.VisScrollPane;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextArea;
 import com.kotcrab.vis.ui.widget.VisTextButton;
-import com.kotcrab.vis.ui.widget.VisTextField;
-import com.kotcrab.vis.ui.widget.VisTextField.TextFieldListener;
+import com.kotcrab.vis.ui.widget.VisWindow;
 import com.lum.scram.Core;
 import com.lum.scram.Scram;
+import com.lum.scram.net.packets.master.GetServerListPacket;
 
 public class MenuScreen implements Screen {
 	
 	private Scram game;
 	
-	private Window mainWindow;
+	private VisWindow serverWindow;
 	private VisTable table;
 	private Stage stage;
+	
+	private static VisList list;
 	
 	public MenuScreen(final Scram game) {
 		this.game = game;
@@ -40,6 +43,10 @@ public class MenuScreen implements Screen {
 		
 		VisUI.load();
 		stage = new Stage();
+		
+		list = new VisList();
+		
+		// Main UI
 		
 		final VisTextArea name = new VisTextArea(Gdx.app.getPreferences("Scram").getString("name", System.getProperty("user.name")));
 		name.setWidth(200f);
@@ -66,15 +73,20 @@ public class MenuScreen implements Screen {
 		join.setHeight(25f);
 		join.setPosition(Gdx.graphics.getWidth()/2-100, Gdx.graphics.getHeight()-250);
 		
+		VisTextButton showBrowser = new VisTextButton("Server Browser");
+		showBrowser.setWidth(200f);
+		showBrowser.setHeight(25f);
+		showBrowser.setPosition(Gdx.graphics.getWidth()/2-100, Gdx.graphics.getHeight()-300);
+		
 		final VisTextButton video = new VisTextButton("Video Settings");
 		video.setWidth(200f);
 		video.setHeight(25);
-		video.setPosition(Gdx.graphics.getWidth()/2-100, Gdx.graphics.getHeight()-300);
+		video.setPosition(Gdx.graphics.getWidth()/2-100, Gdx.graphics.getHeight()-350);
 		video.setDisabled(true);
 		
 		VisTextButton quit = new VisTextButton("Quit");
 		quit.setSize(200, 25);
-		quit.setPosition(Gdx.graphics.getWidth()/2-100, Gdx.graphics.getHeight()-350);
+		quit.setPosition(Gdx.graphics.getWidth()/2-100, Gdx.graphics.getHeight()-400);
 		
 		
 		host.addListener(new ClickListener() {
@@ -103,6 +115,13 @@ public class MenuScreen implements Screen {
 			}
 		});
 		
+		showBrowser.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				createServerBrowser();
+			}
+		});
+		
 		video.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -123,6 +142,7 @@ public class MenuScreen implements Screen {
 		stage.addActor(port);
 		stage.addActor(host);
 		stage.addActor(join);
+		stage.addActor(showBrowser);
 		stage.addActor(video);
 		stage.addActor(quit);
 		
@@ -132,6 +152,56 @@ public class MenuScreen implements Screen {
 		
 	}
 	
+	public static void setServerList(Object[] l) {
+		if (list == null) return;
+		list.setItems(l);
+	}
+	
+	private void createServerBrowser() {
+		// Server browser
+		list.setItems((Object[]) new String[] {});
+		
+		serverWindow = new VisWindow("Server Browser");
+		serverWindow.setSize(460, 300);
+		serverWindow.centerWindow();
+		
+		final VisScrollPane browser = new VisScrollPane(list);
+		browser.setPosition(0, 0);
+		browser.setWidth(460);
+		browser.setHeight(220);
+		
+		VisTextButton connect = new VisTextButton("Connect");
+		connect.setPosition(10, 235);
+		connect.setSize(75, 25);
+		
+		VisTextButton refresh = new VisTextButton("Refresh");
+		refresh.setPosition(100, 235);
+		refresh.setSize(75, 25);
+		
+		VisTextButton cancel = new VisTextButton("Cancel");
+		cancel.setPosition(375, 235);
+		cancel.setSize(75, 25);
+		
+		refresh.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				Core.masterClient.Send(new GetServerListPacket());
+			}
+		});
+		
+		cancel.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent clicked, float x, float y) {
+				serverWindow.remove();
+			}
+		});
+		
+		serverWindow.addActor(browser);
+		serverWindow.addActor(connect);
+		serverWindow.addActor(refresh);
+		serverWindow.addActor(cancel);
+		stage.addActor(serverWindow);
+	}
 	
 	@Override
 	public void show() {
@@ -168,6 +238,7 @@ public class MenuScreen implements Screen {
 
 	@Override
 	public void dispose() {
+		Core.masterClient.Disconnect();
 		VisUI.dispose();
 	}
 	
