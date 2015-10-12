@@ -27,6 +27,7 @@ public class MenuScreen implements Screen {
 	private Stage stage;
 	
 	private static VisList list;
+	private static String selected;
 	
 	public MenuScreen(final Scram game) {
 		this.game = game;
@@ -167,6 +168,8 @@ public class MenuScreen implements Screen {
 		serverWindow.setSize(460, 300);
 		serverWindow.centerWindow();
 		
+		selected = (String)list.getSelected();
+		
 		final VisScrollPane browser = new VisScrollPane(list);
 		browser.setPosition(0, 0);
 		browser.setWidth(460);
@@ -184,6 +187,15 @@ public class MenuScreen implements Screen {
 		cancel.setPosition(375, 235);
 		cancel.setSize(75, 25);
 		
+		connect.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				Gdx.app.getPreferences("Scram").putString("ip", selected.substring(4));
+				Gdx.app.getPreferences("Scram").putInteger("port", 7777);
+				game.setScreen(new PlayScreen(game));
+			}
+		});
+		
 		refresh.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -193,7 +205,7 @@ public class MenuScreen implements Screen {
 		
 		cancel.addListener(new ClickListener() {
 			@Override
-			public void clicked(InputEvent clicked, float x, float y) {
+			public void clicked(InputEvent event, float x, float y) {
 				serverWindow.remove();
 			}
 		});
